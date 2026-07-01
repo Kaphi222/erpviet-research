@@ -6,19 +6,22 @@
 <title>Business Central cho Ngành Bán Lẻ | ERPVietResearch</title>
 <meta name="description" content="Phân tích module Business Central cho chuỗi bán lẻ — POS, tồn kho đa chi nhánh, loyalty, omnichannel. Case study và lộ trình triển khai.">
 <link rel="stylesheet" href="../../assets/css/main.css">
+<meta name="industry-id" content="ban-le">
 <style>:root { --ind-color: #2E4057; }</style>
 </head>
 <body>
 
 <div id="site-header"></div>
 <script src="../../assets/js/nav.js"></script>
+<script src="../../assets/js/cms.js"></script>
+<script src="../../assets/js/industry-render.js"></script>
 
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
       <div class="eyebrow">Microsoft Dynamics 365 — Ngành Bán Lẻ</div>
-      <h1>ERP cho chuỗi bán lẻ <em>không lệch tồn kho</em> giữa cửa hàng và kho tổng</h1>
-      <p class="lede">Business Central kết nối POS, tồn kho đa chi nhánh, và đơn hàng omnichannel trong một hệ thống — thay vì mỗi cửa hàng một sổ sách riêng, cuối ngày mới đối soát thủ công.</p>
+      <h1 id="ind-hero-h1">ERP cho chuỗi bán lẻ <em>không lệch tồn kho</em> giữa cửa hàng và kho tổng</h1>
+      <p class="lede" id="ind-hero-lede">Business Central kết nối POS, tồn kho đa chi nhánh, và đơn hàng omnichannel trong một hệ thống — thay vì mỗi cửa hàng một sổ sách riêng, cuối ngày mới đối soát thủ công.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
         <a class="btn btn-secondary" href="#case-study">Xem case study</a>
@@ -35,7 +38,7 @@
   </div>
 </section>
 
-<div class="ind-stat-bar">
+<div class="ind-stat-bar" id="ind-stat-bar">
   <div class="wrap">
     <div class="ind-stat-item"><b>-40%</b><span>Thời gian kiểm kê cuối kỳ</span></div>
     <div class="ind-stat-item"><b>+18%</b><span>Tỷ lệ chuyển đổi đa kênh</span></div>
@@ -49,7 +52,7 @@
       <h2>3 bài toán doanh nghiệp bán lẻ Việt Nam thường gặp</h2>
       <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
     </div>
-    <div class="pain-grid">
+    <div class="pain-grid" id="ind-pain-grid">
       <div class="pain-card">
         <span class="num">01</span>
         <h3>Tồn kho lệch giữa các chi nhánh</h3>
@@ -78,7 +81,7 @@
       <h2>Module Business Central dành cho bán lẻ</h2>
       <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
     </div>
-    <table class="module-table">
+    <table class="module-table" id="ind-module-table">
       <thead>
         <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
       </thead>
@@ -110,7 +113,7 @@
 
 <section class="section" id="case-study">
   <div class="wrap">
-    <div class="case">
+    <div id="ind-case" class="case">
       <div>
         <div class="eyebrow eyebrow--light">Case Study</div>
         <h3>Chuỗi 18 cửa hàng thời trang tại TP.HCM</h3>

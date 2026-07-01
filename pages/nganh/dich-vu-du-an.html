@@ -6,19 +6,22 @@
 <title>Business Central cho Ngành Dịch Vụ & Dự Án | ERPVietResearch</title>
 <meta name="description" content="Phân tích module Business Central cho công ty dịch vụ, tư vấn, IT — Job Costing, Timesheet, Resource Planning, lợi nhuận dự án realtime.">
 <link rel="stylesheet" href="../../assets/css/main.css">
+<meta name="industry-id" content="dich-vu-du-an">
 <style>:root { --ind-color: #7C6A4A; }</style>
 </head>
 <body>
 
 <div id="site-header"></div>
 <script src="../../assets/js/nav.js"></script>
+<script src="../../assets/js/cms.js"></script>
+<script src="../../assets/js/industry-render.js"></script>
 
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
       <div class="eyebrow">Microsoft Dynamics 365 — Ngành Dịch Vụ &amp; Quản Lý Dự Án</div>
-      <h1>ERP cho công ty dịch vụ <em>không lỗ thầm lặng</em> trên từng dự án</h1>
-      <p class="lede">Business Central theo dõi giờ công, ngân sách, và lợi nhuận theo từng dự án theo thời gian thực — thay vì chỉ biết dự án lãi hay lỗ sau khi đã đóng sổ.</p>
+      <h1 id="ind-hero-h1">ERP cho công ty dịch vụ <em>không lỗ thầm lặng</em> trên từng dự án</h1>
+      <p class="lede" id="ind-hero-lede">Business Central theo dõi giờ công, ngân sách, và lợi nhuận theo từng dự án theo thời gian thực — thay vì chỉ biết dự án lãi hay lỗ sau khi đã đóng sổ.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
         <a class="btn btn-secondary" href="#case-study">Xem case study</a>
@@ -35,7 +38,7 @@
   </div>
 </section>
 
-<div class="ind-stat-bar">
+<div class="ind-stat-bar" id="ind-stat-bar">
   <div class="wrap">
     <div class="ind-stat-item"><b>+25%</b><span>Tỷ lệ billable hours</span></div>
     <div class="ind-stat-item"><b>-30%</b><span>Dự án vượt ngân sách</span></div>
@@ -49,7 +52,7 @@
       <h2>3 bài toán doanh nghiệp dịch vụ &amp; dự án Việt Nam thường gặp</h2>
       <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
     </div>
-    <div class="pain-grid">
+    <div class="pain-grid" id="ind-pain-grid">
       <div class="pain-card">
         <span class="num">01</span>
         <h3>Không biết dự án đang lãi hay lỗ giữa chừng</h3>
@@ -78,7 +81,7 @@
       <h2>Module Business Central dành cho dịch vụ &amp; quản lý dự án</h2>
       <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
     </div>
-    <table class="module-table">
+    <table class="module-table" id="ind-module-table">
       <thead>
         <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
       </thead>
@@ -110,7 +113,7 @@
 
 <section class="section" id="case-study">
   <div class="wrap">
-    <div class="case">
+    <div id="ind-case" class="case">
       <div>
         <div class="eyebrow eyebrow--light">Case Study</div>
         <h3>Công ty tư vấn IT 80 nhân sự tại Hà Nội</h3>

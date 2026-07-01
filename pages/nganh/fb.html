@@ -6,19 +6,22 @@
 <title>Business Central cho Ngành F&B | ERPVietResearch</title>
 <meta name="description" content="Phân tích module Business Central cho doanh nghiệp F&B — Lot Tracking, FEFO, Recipe Management, truy xuất nguồn gốc ISO 22000.">
 <link rel="stylesheet" href="../../assets/css/main.css">
+<meta name="industry-id" content="fb">
 <style>:root { --ind-color: #7C4A6A; }</style>
 </head>
 <body>
 
 <div id="site-header"></div>
 <script src="../../assets/js/nav.js"></script>
+<script src="../../assets/js/cms.js"></script>
+<script src="../../assets/js/industry-render.js"></script>
 
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
       <div class="eyebrow">Microsoft Dynamics 365 — Ngành Thực Phẩm &amp; Đồ Uống</div>
-      <h1>ERP cho doanh nghiệp F&amp;B <em>không lo hết hạn sử dụng</em> giữa kho và sản xuất</h1>
-      <p class="lede">Business Central kiểm soát hạn sử dụng (lot/expiry), truy xuất nguồn gốc, và công thức chế biến trong một hệ thống — thay vì ghi sổ tay và phát hiện hàng hết hạn khi đã quá muộn.</p>
+      <h1 id="ind-hero-h1">ERP cho doanh nghiệp F&amp;B <em>không lo hết hạn sử dụng</em> giữa kho và sản xuất</h1>
+      <p class="lede" id="ind-hero-lede">Business Central kiểm soát hạn sử dụng (lot/expiry), truy xuất nguồn gốc, và công thức chế biến trong một hệ thống — thay vì ghi sổ tay và phát hiện hàng hết hạn khi đã quá muộn.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
         <a class="btn btn-secondary" href="#case-study">Xem case study</a>
@@ -35,7 +38,7 @@
   </div>
 </section>
 
-<div class="ind-stat-bar">
+<div class="ind-stat-bar" id="ind-stat-bar">
   <div class="wrap">
     <div class="ind-stat-item"><b>-60%</b><span>Hàng hủy do hết hạn sử dụng</span></div>
     <div class="ind-stat-item"><b>-45%</b><span>Thời gian truy xuất khi audit</span></div>
@@ -49,7 +52,7 @@
       <h2>3 bài toán doanh nghiệp F&amp;B Việt Nam thường gặp</h2>
       <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
     </div>
-    <div class="pain-grid">
+    <div class="pain-grid" id="ind-pain-grid">
       <div class="pain-card">
         <span class="num">01</span>
         <h3>Hàng tồn kho hết hạn mà không phát hiện kịp</h3>
@@ -78,7 +81,7 @@
       <h2>Module Business Central dành cho F&amp;B</h2>
       <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
     </div>
-    <table class="module-table">
+    <table class="module-table" id="ind-module-table">
       <thead>
         <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
       </thead>
@@ -110,7 +113,7 @@
 
 <section class="section" id="case-study">
   <div class="wrap">
-    <div class="case">
+    <div id="ind-case" class="case">
       <div>
         <div class="eyebrow eyebrow--light">Case Study</div>
         <h3>Nhà máy chế biến nước giải khát tại Long An</h3>

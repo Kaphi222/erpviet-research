@@ -6,6 +6,7 @@
 <title>ERPVietResearch — Thư viện ERP cho doanh nghiệp Việt Nam</title>
 <meta name="description" content="Nghiên cứu độc lập về Microsoft Dynamics 365 Business Central — case studies thực tế, phân tích module theo ngành, tư vấn lộ trình triển khai cho SMB Việt Nam.">
 <link rel="stylesheet" href="assets/css/main.css">
+<script src="assets/js/cms.js"></script>
 </head>
 <body>
 
@@ -148,8 +149,7 @@
   /* ── Load industries ── */
   async function loadIndustries() {
     try {
-      const res = await fetch(base + 'data/industries.json');
-      const industries = await res.json();
+      const industries = await fetchCMS('Nganh');
       const grid = document.getElementById('industry-grid');
       if (!grid) return;
       grid.innerHTML = industries.map(ind => `
@@ -169,8 +169,7 @@
   /* ── Load case studies ── */
   async function loadCases() {
     try {
-      const res = await fetch(base + 'data/case-studies.json');
-      const cases = await res.json();
+      const cases = await fetchCMS('CaseStudies');
 
       // Featured case
       const featured = cases.find(c => c.featured);

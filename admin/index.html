@@ -123,6 +123,8 @@ tr:hover td{background:#fafaf8;}
   <div class="sb-item active" onclick="showPanel('industries')"><span class="icon">🏭</span>Ngành nghề<span class="badge" id="badge-industries">5</span></div>
   <div class="sb-item" onclick="showPanel('cases')"><span class="icon">📋</span>Case Studies<span class="badge" id="badge-cases">7</span></div>
   <div class="sb-item" onclick="showPanel('site')"><span class="icon">⚙️</span>Cấu hình site</div>
+  <div class="sb-section">Google Sheets CMS</div>
+  <div class="sb-item" onclick="showPanel('sheets')"><span class="icon">📊</span>Sheets CMS</div>
   <div class="sb-section">Công cụ</div>
   <div class="sb-item" onclick="showPanel('guide')"><span class="icon">📖</span>Hướng dẫn publish</div>
   <div class="sb-item" onclick="showPanel('preview')"><span class="icon">🔗</span>Links trang</div>
@@ -193,6 +195,130 @@ tr:hover td{background:#fafaf8;}
         <div style="margin-top:20px;display:flex;gap:10px;">
           <button class="btn btn-primary" onclick="saveSiteConfig()">Lưu thay đổi</button>
           <button class="btn btn-amber" onclick="exportCurrent()">Xuất site.json</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHEETS CMS PANEL -->
+    <div class="panel" id="panel-sheets">
+      <div class="alert alert-info">📊 Kết nối với Google Sheets qua Apps Script. Tải dữ liệu mới nhất, export JSON backup, hoặc restore Sheet từ file JSON cũ.</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+
+        <!-- LOAD FROM SHEETS -->
+        <div class="guide-card">
+          <h3>☁️ Tải từ Google Sheets</h3>
+          <p style="font-size:13px;color:var(--steel);margin-bottom:14px;">Lấy dữ liệu mới nhất từ Sheet và xem trước trong bảng bên dưới.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="loadFromSheets('Nganh')">Tải tab Ngành</button>
+            <button class="btn btn-primary btn-sm" onclick="loadFromSheets('CaseStudies')">Tải tab CaseStudies</button>
+          </div>
+          <div id="sheets-status" style="margin-top:12px;font-size:12px;color:var(--steel);font-family:'JetBrains Mono',monospace;"></div>
+        </div>
+
+        <!-- EXPORT JSON -->
+        <div class="guide-card">
+          <h3>⬇️ Export JSON (Backup)</h3>
+          <p style="font-size:13px;color:var(--steel);margin-bottom:14px;">Tải dữ liệu từ Sheet về dạng JSON để commit lên GitHub. Đây là bản backup version-controlled.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-amber btn-sm" onclick="exportFromSheets('Nganh','industries.json')">Export industries.json</button>
+            <button class="btn btn-amber btn-sm" onclick="exportFromSheets('CaseStudies','case-studies.json')">Export case-studies.json</button>
+          </div>
+        </div>
+
+        <!-- RESTORE FROM JSON -->
+        <div class="guide-card" style="grid-column:1/-1;">
+          <h3>↑ Restore từ JSON → Google Sheets</h3>
+          <p style="font-size:13px;color:var(--steel);margin-bottom:14px;">Upload file JSON cũ để ghi đè nội dung trong Sheet (dùng để rollback về version cũ). <strong>Cẩn thận: sẽ xóa toàn bộ dữ liệu Sheet hiện tại.</strong></p>
+          <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+            <div class="field" style="flex:1;min-width:200px;">
+              <label>Sheet cần restore</label>
+              <select id="restore-sheet">
+                <option value="Nganh">Ngành (industries.json)</option>
+                <option value="CaseStudies">CaseStudies (case-studies.json)</option>
+              </select>
+            </div>
+            <div class="field" style="flex:2;min-width:200px;">
+              <label>Chọn file JSON</label>
+              <input type="file" id="restore-file" accept=".json" style="border:1.5px solid rgba(28,27,31,.3);padding:7px 10px;font-size:13px;background:var(--paper);border-radius:2px;">
+            </div>
+            <button class="btn btn-danger btn-sm" style="white-space:nowrap;" onclick="restoreToSheets()">↑ Restore lên Sheets</button>
+          </div>
+          <div id="restore-status" style="margin-top:12px;font-size:12px;font-family:'JetBrains Mono',monospace;"></div>
+        </div>
+      </div>
+
+      <!-- APPS SCRIPT SETUP -->
+      <div class="guide-card" style="margin-bottom:20px;">
+        <h3>⚙️ Cấu hình Apps Script (cần làm 1 lần)</h3>
+        <p style="font-size:13px;color:var(--steel);margin-bottom:10px;">Cập nhật Apps Script hiện có để hỗ trợ CMS (đọc tab theo tên + restore). Mở Apps Script → thay toàn bộ bằng code bên dưới → Deploy lại (New deployment).</p>
+        <details>
+          <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--teal);">Xem code Apps Script cần cập nhật →</summary>
+          <pre class="json-view" style="margin-top:10px;user-select:all;font-size:11px;">const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID'; // thay bằng ID Sheet của bạn
+
+function doGet(e) {
+  const sheetName = e.parameter.sheet;
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+
+  // CMS read: ?sheet=Nganh or ?sheet=CaseStudies
+  if (sheetName) {
+    const sheet = ss.getSheetByName(sheetName);
+    if (!sheet) return json({error:'Sheet not found'});
+    const rows = sheet.getDataRange().getValues();
+    const headers = rows[0];
+    const data = rows.slice(1)
+      .filter(r => r[0] !== '')
+      .map(r => {
+        const obj = {};
+        headers.forEach((h, i) => { if (h) obj[h] = r[i]; });
+        return obj;
+      });
+    return json(data);
+  }
+
+  // Booking form write: ?name=...&email=...
+  const p = e.parameter;
+  if (p.name) {
+    const bookingSheet = ss.getSheetByName('Responses') || ss.getSheets()[0];
+    bookingSheet.appendRow([
+      new Date(), p.name, p.company, p.email, p.phone,
+      p.role, p.industry, p.topics, p.date, p.time,
+      p.current, p.size, p.note
+    ]);
+  }
+  return json({status:'ok'});
+}
+
+function doPost(e) {
+  const p = JSON.parse(e.postData.contents);
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName(p.sheet);
+  if (!sheet) return json({error:'Sheet not found'});
+  const rows = p.data;
+  sheet.clearContents();
+  const headers = Object.keys(rows[0]);
+  sheet.appendRow(headers);
+  rows.forEach(r => sheet.appendRow(headers.map(h => r[h] !== undefined ? r[h] : '')));
+  return json({status:'ok'});
+}
+
+function json(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+        </details>
+        <div style="margin-top:10px;font-size:12px;color:#999;">Tabs cần có trong Sheet: <strong>Responses</strong> (booking), <strong>Nganh</strong>, <strong>CaseStudies</strong>. Headers phải khớp với field trong JSON.</div>
+      </div>
+
+      <!-- PREVIEW TABLE -->
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <h2>Xem trước dữ liệu từ Sheet</h2>
+          <span id="sheets-preview-label" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--steel);">Chưa tải</span>
+        </div>
+        <div id="sheets-preview" style="padding:24px;text-align:center;color:var(--steel);font-size:13px;">
+          Nhấn "Tải tab Ngành" hoặc "Tải tab CaseStudies" để xem dữ liệu.
         </div>
       </div>
     </div>
@@ -289,6 +415,96 @@ tr:hover td{background:#fafaf8;}
   </div>
 </div>
 
+<script src="../assets/js/cms.js"></script>
 <script src="admin.js"></script>
+<script>
+// ── Sheets CMS panel functions ────────────────────────────────────────────────
+let _sheetsData = null;
+let _sheetsSheet = null;
+
+async function loadFromSheets(sheetName) {
+  const status = document.getElementById('sheets-status');
+  const preview = document.getElementById('sheets-preview');
+  const label = document.getElementById('sheets-preview-label');
+  status.textContent = 'Đang tải...';
+  preview.textContent = 'Đang tải dữ liệu...';
+  try {
+    const data = await fetchCMS(sheetName);
+    _sheetsData = data;
+    _sheetsSheet = sheetName;
+    status.textContent = `✓ Đã tải ${data.length} hàng từ tab "${sheetName}"`;
+    label.textContent = `Tab: ${sheetName} — ${data.length} hàng`;
+
+    if (!data.length) {
+      preview.textContent = 'Sheet trống hoặc không có dữ liệu.';
+      return;
+    }
+
+    const headers = Object.keys(data[0]);
+    const maxCols = 8;
+    const shownHeaders = headers.slice(0, maxCols);
+    preview.innerHTML = `
+      <div style="overflow-x:auto;">
+        <table style="font-size:12px;">
+          <thead><tr>${shownHeaders.map(h => `<th>${h}</th>`).join('')}${headers.length > maxCols ? `<th>+${headers.length - maxCols} cột...</th>` : ''}</tr></thead>
+          <tbody>
+            ${data.slice(0, 20).map(row => `<tr>${shownHeaders.map(h => `<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${row[h] !== undefined ? String(row[h]).slice(0, 60) : ''}</td>`).join('')}${headers.length > maxCols ? '<td style="color:#aaa;">...</td>' : ''}</tr>`).join('')}
+            ${data.length > 20 ? `<tr><td colspan="${shownHeaders.length + (headers.length > maxCols ? 1 : 0)}" style="text-align:center;color:#aaa;font-style:italic;">... và ${data.length - 20} hàng nữa</td></tr>` : ''}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } catch (e) {
+    status.textContent = '✗ Lỗi: ' + e.message;
+    preview.textContent = 'Không thể tải dữ liệu. Kiểm tra CMS_SCRIPT_URL trong cms.js.';
+  }
+}
+
+async function exportFromSheets(sheetName, filename) {
+  const status = document.getElementById('sheets-status');
+  status.textContent = `Đang tải ${sheetName}...`;
+  try {
+    const data = await fetchCMS(sheetName);
+    exportJSON(data, filename);
+    status.textContent = `✓ Đã export ${data.length} hàng → ${filename}`;
+  } catch (e) {
+    status.textContent = '✗ Lỗi: ' + e.message;
+  }
+}
+
+async function restoreToSheets() {
+  const sheetName = document.getElementById('restore-sheet').value;
+  const fileInput = document.getElementById('restore-file');
+  const status = document.getElementById('restore-status');
+
+  if (!fileInput.files.length) {
+    status.style.color = 'var(--error)';
+    status.textContent = '✗ Vui lòng chọn file JSON trước.';
+    return;
+  }
+
+  const confirmed = confirm(`⚠️ Sẽ xóa toàn bộ dữ liệu tab "${sheetName}" và ghi đè bằng file JSON này.\n\nBạn có chắc chắn không?`);
+  if (!confirmed) return;
+
+  status.style.color = 'var(--steel)';
+  status.textContent = 'Đang đọc file...';
+
+  try {
+    const text = await fileInput.files[0].text();
+    const data = JSON.parse(text);
+    status.textContent = `Đang ghi ${data.length} hàng lên Sheet "${sheetName}"...`;
+    const result = await pushCMS(sheetName, data);
+    if (result && result.status === 'ok') {
+      status.style.color = 'var(--success)';
+      status.textContent = `✓ Đã restore ${data.length} hàng lên Sheet "${sheetName}" thành công.`;
+    } else {
+      throw new Error(result?.error || 'Không rõ lỗi');
+    }
+  } catch (e) {
+    status.style.color = 'var(--error)';
+    status.textContent = '✗ Lỗi: ' + e.message;
+  }
+}
+</script>
 </body>
 </html>

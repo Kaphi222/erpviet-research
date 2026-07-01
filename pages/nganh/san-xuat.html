@@ -6,19 +6,22 @@
 <title>Business Central cho Ngành Sản Xuất | ERPVietResearch</title>
 <meta name="description" content="Phân tích module Business Central cho doanh nghiệp sản xuất — BOM, MRP, Production Order, Quality Management. Case study và lộ trình triển khai thực tế.">
 <link rel="stylesheet" href="../../assets/css/main.css">
+<meta name="industry-id" content="san-xuat">
 <style>:root { --ind-color: #4A7C7C; }</style>
 </head>
 <body>
 
 <div id="site-header"></div>
 <script src="../../assets/js/nav.js"></script>
+<script src="../../assets/js/cms.js"></script>
+<script src="../../assets/js/industry-render.js"></script>
 
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
       <div class="eyebrow">Microsoft Dynamics 365 — Ngành Sản Xuất</div>
-      <h1>ERP cho nhà máy <em>không đoán mò</em> kế hoạch sản xuất</h1>
-      <p class="lede">Business Central giúp doanh nghiệp sản xuất vừa và nhỏ kết nối BOM, MRP, và đơn hàng sản xuất trong một hệ thống — thay vì rời rạc giữa Excel và phần mềm kế toán.</p>
+      <h1 id="ind-hero-h1">ERP cho nhà máy <em>không đoán mò</em> kế hoạch sản xuất</h1>
+      <p class="lede" id="ind-hero-lede">Business Central giúp doanh nghiệp sản xuất vừa và nhỏ kết nối BOM, MRP, và đơn hàng sản xuất trong một hệ thống — thay vì rời rạc giữa Excel và phần mềm kế toán.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
         <a class="btn btn-secondary" href="#case-study">Xem case study</a>
@@ -35,8 +38,7 @@
   </div>
 </section>
 
-<!-- STAT BAR -->
-<div class="ind-stat-bar">
+<div class="ind-stat-bar" id="ind-stat-bar">
   <div class="wrap">
     <div class="ind-stat-item"><b>-35%</b><span>Thời gian đóng kỳ kế toán</span></div>
     <div class="ind-stat-item"><b>-22%</b><span>Tồn kho dư thừa sau triển khai</span></div>
@@ -50,7 +52,7 @@
       <h2>3 bài toán doanh nghiệp sản xuất Việt Nam thường gặp</h2>
       <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
     </div>
-    <div class="pain-grid">
+    <div class="pain-grid" id="ind-pain-grid">
       <div class="pain-card">
         <span class="num">01</span>
         <h3>Tồn kho ảo, không khớp thực tế</h3>
@@ -79,7 +81,7 @@
       <h2>Module Business Central dành cho sản xuất</h2>
       <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
     </div>
-    <table class="module-table">
+    <table class="module-table" id="ind-module-table">
       <thead>
         <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
       </thead>
@@ -111,7 +113,7 @@
 
 <section class="section" id="case-study">
   <div class="wrap">
-    <div class="case">
+    <div id="ind-case" class="case">
       <div>
         <div class="eyebrow eyebrow--light">Case Study</div>
         <h3>Nhà máy cơ khí 200 nhân sự tại Bình Dương</h3>

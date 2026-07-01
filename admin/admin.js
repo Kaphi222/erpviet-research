@@ -8,6 +8,7 @@ const PANEL_TITLES = {
   industries: 'Quản lý Ngành nghề',
   cases: 'Quản lý Case Studies',
   site: 'Cấu hình Site',
+  sheets: 'Google Sheets CMS',
   guide: 'Hướng dẫn Publish',
   preview: 'Links trang'
 };
