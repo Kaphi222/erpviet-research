@@ -476,6 +476,78 @@ h1 em { font-style: normal; color: var(--teal); }
 .page-404 h1 { font-size: 28px; margin-bottom: 12px; }
 .page-404 p { color: var(--steel); margin-bottom: 28px; }
 
+/* ── Industry accent system ── */
+/* Each industry page sets: <style>:root { --ind-color: #hex; }</style> */
+.diagram { border-top: 3px solid var(--ind-color, var(--teal)); }
+
+.ind-stat-bar {
+  border-top: 3px solid var(--ind-color, var(--teal));
+  border-bottom: 1px solid var(--line);
+  background: var(--white);
+  padding: 0;
+}
+.ind-stat-bar .wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.ind-stat-item {
+  padding: 24px 28px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ind-stat-item:last-child { border-right: none; }
+.ind-stat-item b {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--ind-color, var(--teal));
+  line-height: 1;
+}
+.ind-stat-item span { font-size: 12px; color: var(--steel); line-height: 1.4; }
+
+/* ── Related industries ── */
+.related-section {
+  background: var(--paper);
+  padding: 36px 0;
+  border-top: 1px solid var(--line);
+}
+.related-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--steel);
+  margin-bottom: 14px;
+}
+.related-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.related-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 18px;
+  background: var(--white);
+  border: 1px solid var(--line-strong);
+  text-decoration: none;
+  color: var(--ink);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.related-chip:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.related-chip:hover .dot { opacity: 0.7; }
+.related-chip .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr 1fr; }
@@ -485,6 +557,11 @@ h1 em { font-style: normal; color: var(--teal); }
   .footer-inner { grid-template-columns: 1fr 1fr; }
   .stats-bar { grid-template-columns: 1fr 1fr; }
   .explainer-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .ind-stat-bar .wrap { grid-template-columns: 1fr 1fr; }
+  .ind-stat-item:nth-child(2) { border-right: none; }
+  .ind-stat-item:nth-child(3) { border-top: 1px solid var(--line); border-right: none; grid-column: span 2; }
 }
 @media (max-width: 680px) {
   h1 { font-size: 32px; }
