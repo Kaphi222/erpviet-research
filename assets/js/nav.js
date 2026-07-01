@@ -1,15 +1,12 @@
 (function () {
   'use strict';
 
-  /* ── Resolve root-relative paths based on current page depth ── */
-  function rootPath(rel) {
-    // Count how many directories deep we are from root
-    const depth = window.location.pathname.split('/').filter(Boolean).length - 1;
-    if (depth <= 0) return rel;
-    return '../'.repeat(depth) + rel;
-  }
+  /* ── Determine absolute site base from this script's src ── */
+  const _scriptSrc = (document.currentScript && document.currentScript.src) || '';
+  const base = _scriptSrc.replace(/assets\/js\/nav\.js(\?.*)?$/, '');
 
-  const base = rootPath('');
+  /* Expose for inline scripts on the same page */
+  window.SITE_BASE = base;
 
   /* ── Active nav detection ── */
   function isActive(href) {

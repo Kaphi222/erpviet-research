@@ -143,7 +143,7 @@
 
 <script>
 (async function () {
-  const base = '';
+  const base = window.SITE_BASE || '';
 
   /* ── Load industries ── */
   async function loadIndustries() {
@@ -153,7 +153,7 @@
       const grid = document.getElementById('industry-grid');
       if (!grid) return;
       grid.innerHTML = industries.map(ind => `
-        <a href="${ind.slug}" class="industry-card" style="display:flex;flex-direction:column;padding:24px;background:var(--paper);transition:background 0.15s;text-decoration:none;color:inherit;" onmouseover="this.style.background='var(--white)'" onmouseout="this.style.background='var(--paper)'">
+        <a href="${base}${ind.slug}" class="industry-card" style="display:flex;flex-direction:column;padding:24px;background:var(--paper);transition:background 0.15s;text-decoration:none;color:inherit;" onmouseover="this.style.background='var(--white)'" onmouseout="this.style.background='var(--paper)'">
           <div style="width:10px;height:10px;border-radius:50%;background:${ind.color};margin-bottom:16px;"></div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--steel);margin-bottom:6px;">${ind.labelEn}</div>
           <h3 style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;">${ind.label}</h3>
@@ -185,7 +185,7 @@
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
                 ${featured.solutions.map(s => `<span class="sol-tag" style="border-color:rgba(255,255,255,0.2);color:#cfcfd2;">${s}</span>`).join('')}
               </div>
-              <a href="${featured.detailUrl || featured.slug}" class="btn btn-outline-light">Xem case study →</a>
+              <a href="${featured.detailUrl ? base + featured.detailUrl : (featured.sourceUrl || base + 'pages/case-studies/index.html')}" ${featured.sourceUrl && !featured.detailUrl ? 'target="_blank" rel="noopener"' : ''} class="btn btn-outline-light">Xem case study →</a>
             </div>
             <div class="featured-results">
               ${featured.results.map(r => `
@@ -213,7 +213,7 @@
             </div>
             <div class="card-meta">
               <span class="card-date">${c.date}</span>
-              <a class="card-link" href="${c.detailUrl || c.slug}">Xem chi tiết</a>
+              <a class="card-link" href="${c.detailUrl ? base + c.detailUrl : (c.sourceUrl || base + 'pages/case-studies/index.html')}" ${c.sourceUrl && !c.detailUrl ? 'target="_blank" rel="noopener"' : ''}>Xem chi tiết</a>
             </div>
           </div>
         `).join('');
