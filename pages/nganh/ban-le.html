@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Central cho Ngành Bán Lẻ | ERPVietResearch</title>
+<meta name="description" content="Phân tích module Business Central cho chuỗi bán lẻ — POS, tồn kho đa chi nhánh, loyalty, omnichannel. Case study và lộ trình triển khai.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Microsoft Dynamics 365 — Ngành Bán Lẻ</div>
+      <h1>ERP cho chuỗi bán lẻ <em>không lệch tồn kho</em> giữa cửa hàng và kho tổng</h1>
+      <p class="lede">Business Central kết nối POS, tồn kho đa chi nhánh, và đơn hàng omnichannel trong một hệ thống — thay vì mỗi cửa hàng một sổ sách riêng, cuối ngày mới đối soát thủ công.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
+        <a class="btn btn-secondary" href="#case-study">Xem case study</a>
+      </div>
+    </div>
+    <div class="diagram">
+      <div class="diagram-title">/ Sơ đồ module — Quy trình bán lẻ</div>
+      <div class="factory-node"><span class="tag">01 — BÁN HÀNG</span>Point of Sale (POS) &amp; Omnichannel</div>
+      <div class="factory-node lvl2"><span class="tag">→ LOYALTY</span>Chương trình khách hàng thân thiết</div>
+      <div class="factory-node"><span class="tag">02 — TỒN KHO</span>Multi-location Inventory &amp; Replenishment</div>
+      <div class="factory-node lvl2"><span class="tag">→ TRANSFER</span>Điều chuyển hàng liên chi nhánh</div>
+      <div class="factory-node"><span class="tag">03 — PHÂN TÍCH</span>Sales Analysis &amp; Margin Reporting</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>3 bài toán doanh nghiệp bán lẻ Việt Nam thường gặp</h2>
+      <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="num">01</span>
+        <h3>Tồn kho lệch giữa các chi nhánh</h3>
+        <p>Mỗi cửa hàng quản lý tồn kho riêng lẻ, không đồng bộ real-time với kho tổng, dẫn đến bán hàng "ảo" hoặc thiếu hàng cục bộ.</p>
+        <div class="fix">→ Giải pháp: Multi-location Inventory + Item Tracking</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">02</span>
+        <h3>Không thấy được biên lợi nhuận theo thời gian thực</h3>
+        <p>Giá vốn, chiết khấu, khuyến mãi không được phản ánh ngay vào báo cáo, khiến quyết định giá bán chậm trễ.</p>
+        <div class="fix">→ Giải pháp: Sales &amp; Margin Analysis Dashboard</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">03</span>
+        <h3>Trải nghiệm khách hàng rời rạc đa kênh</h3>
+        <p>Khách mua online và tại cửa hàng bị xem là hai hệ thống khác nhau, không tích điểm hay đổi trả xuyên kênh được.</p>
+        <div class="fix">→ Giải pháp: Omnichannel POS + Loyalty Integration</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Module Business Central dành cho bán lẻ</h2>
+      <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
+    </div>
+    <table class="module-table">
+      <thead>
+        <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mod-name">Point of Sale (POS)<span class="al">AppSource extension – BC POS connector</span></td>
+          <td>Bán hàng tại quầy, đồng bộ realtime với tồn kho trung tâm</td>
+          <td>Chuỗi cửa hàng, showroom</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Multi-location Inventory<span class="al">Table 14 – Location</span></td>
+          <td>Quản lý tồn kho theo từng chi nhánh, điều chuyển hàng tự động</td>
+          <td>Bán lẻ đa chi nhánh</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Item Tracking &amp; Replenishment<span class="al">Codeunit 99000813 – Calculate Plan</span></td>
+          <td>Tự động đề xuất nhập hàng theo doanh số bán thực tế</td>
+          <td>Ngành hàng quay vòng nhanh (FMCG, thời trang)</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Sales &amp; Margin Analysis<span class="al">Table 355 – Item Analysis View</span></td>
+          <td>Báo cáo biên lợi nhuận theo SKU, cửa hàng, nhân viên bán hàng</td>
+          <td>Chủ chuỗi cần ra quyết định giá nhanh</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="case-study">
+  <div class="wrap">
+    <div class="case">
+      <div>
+        <div class="eyebrow eyebrow--light">Case Study</div>
+        <h3>Chuỗi 18 cửa hàng thời trang tại TP.HCM</h3>
+        <p>Hợp nhất tồn kho 18 chi nhánh và kênh online vào một hệ thống Business Central, triển khai POS đồng bộ realtime trong 3 tháng.</p>
+        <a class="btn btn-outline-light" href="../case-studies/index.html">Xem tất cả case study →</a>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>-40%</b><span>Thời gian kiểm kê cuối kỳ</span></div>
+        <div class="stat"><b>+18%</b><span>Tỷ lệ chuyển đổi đa kênh</span></div>
+        <div class="stat"><b>3 tháng</b><span>Thời gian triển khai</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Đánh giá mức độ phù hợp của Business Central với chuỗi bán lẻ của bạn</h2>
+    <p>Tư vấn 30 phút, miễn phí, không ràng buộc.</p>
+    <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn →</a>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+</body>
+</html>

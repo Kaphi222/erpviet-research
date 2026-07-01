@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Study — Business Central thực tế | ERPVietResearch</title>
+<meta name="description" content="Tổng hợp case study triển khai Microsoft Dynamics 365 Business Central — sản xuất, phân phối, F&B, bán lẻ, dịch vụ. Kết quả đo được, bài toán thực tế.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Thư viện tham khảo thực tế — Microsoft Dynamics 365 BC</div>
+    <h1>Doanh nghiệp thực tế,<br><em>kết quả đo được</em></h1>
+    <p class="lede">Tổng hợp các triển khai Business Central từ nhiều ngành — không phải lý thuyết, mỗi case đều có bài toán cụ thể, giải pháp module thực tế, và số liệu kết quả định lượng.</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>11+</b><span>Case study tham khảo</span></div>
+      <div class="hstat"><b>5</b><span>Ngành công nghiệp</span></div>
+      <div class="hstat"><b>2017–2026</b><span>Dải thời gian triển khai</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="wrap">
+  <div class="filterbar">
+    <span class="filter-label">Lọc theo ngành:</span>
+    <button class="chip active" onclick="filterCards('all',this)">Tất cả</button>
+    <button class="chip" onclick="filterCards('manufacturing',this)">Sản xuất</button>
+    <button class="chip" onclick="filterCards('distribution',this)">Phân phối</button>
+    <button class="chip" onclick="filterCards('fb',this)">F&amp;B</button>
+    <button class="chip" onclick="filterCards('retail',this)">Bán lẻ</button>
+    <button class="chip" onclick="filterCards('service',this)">Dịch vụ</button>
+  </div>
+</div>
+
+<!-- FEATURED SPOTLIGHT -->
+<div class="wrap cases-section" style="padding:52px 0;">
+  <h2 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin-bottom:28px;display:flex;align-items:center;gap:12px;">
+    Case nổi bật
+    <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);font-weight:400;background:rgba(232,162,61,.12);padding:3px 8px;">MỚI NHẤT 2026</span>
+  </h2>
+
+  <div class="spotlight" data-industry="distribution">
+    <div class="spotlight-body">
+      <div class="spotlight-label">Phân phối / Tái chế Vật liệu — Athens, Greece — 06/2026</div>
+      <div class="co">VIPA Hellas</div>
+      <h3>Từ 2 hệ thống rời rạc sang kho hàng thời gian thực theo container</h3>
+      <p>VIPA Hellas vận hành hơn 450.000 tấn vật liệu tái chế mỗi năm nhưng phải dùng 2 hệ thống riêng biệt (WMS + ERP), không kết nối — nhân viên phải đối soát thủ công, kiểm kê mất 2-3 ngày. Sau khi triển khai Business Central tích hợp Warehouse Insight và Advanced Inventory Count, toàn bộ quy trình nhận hàng, di chuyển, picking, shipping được thực hiện trực tiếp trên thiết bị di động tại kho.</p>
+      <div class="solution-tags">
+        <span class="sol-tag">Warehouse Insight</span>
+        <span class="sol-tag">Advanced Inventory Count</span>
+        <span class="sol-tag">Barcode Generator</span>
+        <span class="sol-tag">PrintNode Connector</span>
+        <span class="sol-tag">Import Export PowerTool</span>
+      </div>
+      <blockquote>
+        "Trước khi triển khai, chúng tôi thiếu kiểm soát và khả năng nhìn thấy quy trình kho. Với Warehouse Insight, chúng tôi có quy trình thời gian thực và truy xuất đầy đủ. Sự cải thiện về độ chính xác và hiệu quả rất đáng kể."
+        <cite>— Charalampos Chatzidamianos, CFO, VIPA Hellas</cite>
+      </blockquote>
+      <div>
+        <a class="btn btn-outline" style="border:1px solid var(--line-strong);color:var(--ink);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;padding:11px 20px;border-radius:2px;display:inline-flex;align-items:center;gap:7px;" href="../../pages/case-studies/index.html">Đọc chi tiết →</a>
+      </div>
+    </div>
+    <div class="spotlight-aside">
+      <div>
+        <div class="aside-section-title">Kết quả đạt được</div>
+        <div class="stats-aside">
+          <div class="stat-aside"><strong>2–3 ngày → vài giờ</strong><span>Thời gian kiểm kê kho</span></div>
+          <div class="stat-aside"><strong>100%</strong><span>Kho số hóa, realtime trên mobile</span></div>
+          <div class="stat-aside"><strong>Xóa bỏ</strong><span>Hệ thống WMS riêng biệt</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="aside-section-title">Thông tin dự án</div>
+        <div class="aside-item"><b>Ngành</b>Tái chế &amp; Giao dịch vật liệu</div>
+        <div class="aside-item"><b>Hệ thống</b>D365 Business Central Cloud</div>
+        <div class="aside-item"><b>Partner</b>BEWISE SA (Microsoft Partner)</div>
+        <div class="aside-item"><b>Thời gian</b>Q2/2025 — Go-live</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD GRID -->
+  <div class="grid" style="margin-top:1px;">
+
+    <div class="card" data-industry="fb">
+      <div class="card-tag fb">F&amp;B / Sản xuất thực phẩm</div>
+      <div class="card-company">Primal Pet Group</div>
+      <h3>Kiểm soát batch và truy xuất thành phần trong sản xuất thức ăn thú cưng</h3>
+      <p>Nhà máy tại Abilene, Texas quản lý nguyên liệu thô, batch sản xuất, và fulfillment thương mại điện tử. Trước đây ghi chép thủ công trên giấy, không truy xuất được lot sau xuất xưởng.</p>
+      <div class="card-results">
+        <span class="result-pill">Truy xuất batch đầy đủ</span>
+        <span class="result-pill">Xóa quy trình giấy tờ</span>
+        <span class="result-pill">E-commerce tích hợp</span>
+      </div>
+      <div class="solution-tags">
+        <span class="sol-tag">Warehouse Insight</span>
+        <span class="sol-tag">License Plating</span>
+        <span class="sol-tag">Dynamic Ship</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">Mar 2026</span>
+        <a class="card-link" href="https://dmsiworks.com/case-studies/primal-pet-group-business-central-batch-traceability-warehouse-insight" target="_blank" rel="noopener">Xem nguồn gốc</a>
+      </div>
+    </div>
+
+    <div class="card" data-industry="manufacturing">
+      <div class="card-tag manufacturing">Sản xuất / Thủ công mỹ nghệ</div>
+      <div class="card-company">Jim Lawrence Ironworks</div>
+      <h3>Độ chính xác kho và khả năng hiển thị sản xuất cho xưởng thủ công</h3>
+      <p>Thiết kế và sản xuất đồ gia dụng tại Hadleigh, Suffolk — xử lý toàn bộ từ thiết kế, sản xuất, kho vận đến fulfillment trong cùng một mái nhà. Cần kết nối realtime giữa shop floor và hệ thống ERP.</p>
+      <div class="card-results">
+        <span class="result-pill">Độ chính xác kho tăng</span>
+        <span class="result-pill">Hiển thị sản xuất realtime</span>
+      </div>
+      <div class="solution-tags">
+        <span class="sol-tag">Warehouse Insight</span>
+        <span class="sol-tag">Shop Floor Insight</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">May 2026</span>
+        <a class="card-link" href="https://dmsiworks.com/case-studies/jim-lawrence-ironworks-achieving-warehouse-accuracy-and-production-visibility-with-business-central-and-insight-works-apps" target="_blank" rel="noopener">Xem nguồn gốc</a>
+      </div>
+    </div>
+
+    <div class="card" data-industry="manufacturing">
+      <div class="card-tag manufacturing">Sản xuất / Vật liệu xây dựng</div>
+      <div class="card-company">Horizon Stone (Chattanooga, TN)</div>
+      <h3>Vượt giới hạn của QuickBooks — chuyển sang Business Central cho sản xuất</h3>
+      <p>Nhà máy 160.000 sqft sản xuất ốp đá nhân tạo. QuickBooks không hỗ trợ BOM, serialization, hay mobile — không theo dõi được tiêu hao nguyên vật liệu thực tế.</p>
+      <div class="card-results">
+        <span class="result-pill">Truy xuất ngược serialized goods</span>
+        <span class="result-pill">Giảm lỗi picking</span>
+        <span class="result-pill">QC cải thiện rõ rệt</span>
+      </div>
+      <div class="solution-tags">
+        <span class="sol-tag">Business Central</span>
+        <span class="sol-tag">Warehouse Insight</span>
+        <span class="sol-tag">Honeywell CK65</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">Jan 2023</span>
+        <a class="card-link" href="horizon-stone.html">Xem chi tiết</a>
+      </div>
+    </div>
+
+    <div class="card" data-industry="service">
+      <div class="card-tag service">Dịch vụ / Công nghiệp</div>
+      <div class="card-company">AGIS</div>
+      <h3>Giải quyết độ phức tạp vận hành: sản xuất đa địa điểm được đồng bộ hóa</h3>
+      <p>Doanh nghiệp dịch vụ công nghiệp vận hành đa site gặp bottleneck sản xuất nghiêm trọng. Thiếu khả năng hiển thị realtime giữa các địa điểm dẫn đến quyết định chậm và năng suất thấp.</p>
+      <div class="card-results">
+        <span class="result-pill">Giảm bottleneck sản xuất</span>
+        <span class="result-pill">Đồng bộ đa site</span>
+        <span class="result-pill">Hiển thị realtime</span>
+      </div>
+      <div class="solution-tags">
+        <span class="sol-tag">Shop Floor Insight</span>
+        <span class="sol-tag">Business Central</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">Dec 2024</span>
+        <a class="card-link" href="https://dmsiworks.com/case-studies/overcoming-operational-complexity-how-agis-streamlined-multi-site-production" target="_blank" rel="noopener">Xem nguồn gốc</a>
+      </div>
+    </div>
+
+    <div class="card" data-industry="manufacturing">
+      <div class="card-tag manufacturing">Sản xuất / Dệt may &amp; Thêu</div>
+      <div class="card-company">Melco &amp; OESD (BERNINA Group)</div>
+      <h3>Hiện đại hóa ERP: chuyển sang Business Central SaaS, hợp nhất 2 công ty</h3>
+      <p>Hai công ty con của BERNINA International AG chuyển từ on-premise sang Business Central SaaS, hợp nhất database, tích hợp Dynamic Ship + AR Collections + eBiz trong một hệ thống duy nhất.</p>
+      <div class="card-results">
+        <span class="result-pill">Hợp nhất 2 database</span>
+        <span class="result-pill">Chuyển đổi SaaS thành công</span>
+        <span class="result-pill">Tích hợp shipping tự động</span>
+      </div>
+      <div class="solution-tags">
+        <span class="sol-tag">BC SaaS</span>
+        <span class="sol-tag">Dynamic Ship</span>
+        <span class="sol-tag">AR Collections</span>
+        <span class="sol-tag">eBiz</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">Sep 2023</span>
+        <a class="card-link" href="https://dmsiworks.com/case-studies/melco-and-oesd-modernize-operations-and-adopt-microsoft-dynamics-365-business-central-saas" target="_blank" rel="noopener">Xem nguồn gốc</a>
+      </div>
+    </div>
+
+    <div class="card" data-industry="distribution">
+      <div class="card-tag distribution">Phân phối / Đồ chơi thú cưng</div>
+      <div class="card-company">KONG Company</div>
+      <h3>Độ chính xác tồn kho tăng vọt tại trung tâm phân phối khi tăng trưởng nhanh</h3>
+      <p>Khi KONG tăng trưởng, các công cụ cũ không còn đủ khả năng duy trì độ chính xác tồn kho tại kho và trung tâm phân phối. Cần giải pháp có thể scale theo tốc độ tăng trưởng thực tế của doanh nghiệp.</p>
+      <div class="card-results">
+        <span class="result-pill">Tồn kho chính xác hơn</span>
+        <span class="result-pill">Nhiều lợi ích đo được</span>
+      </div>
+      <div class="solution-tags">
+        <span class="sol-tag">Warehouse Insight</span>
+        <span class="sol-tag">Advanced Inventory Count</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">Sep 2017</span>
+        <a class="card-link" href="https://dmsiworks.com/case-studies/kong-increases-inventory-accuracy-and-realizes-multiple-benefits" target="_blank" rel="noopener">Xem nguồn gốc</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CTA STRIP -->
+<div class="cta-strip">
+  <div class="wrap">
+    <h2>Doanh nghiệp bạn phù hợp với case study nào?</h2>
+    <p>Tư vấn 30 phút để xác định module và lộ trình triển khai phù hợp nhất với bài toán của bạn.</p>
+    <a class="btn btn-paper" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script>
+function filterCards(industry, btn){
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  const spotlight = document.querySelector('.spotlight');
+  const cards = document.querySelectorAll('.card');
+  if(industry === 'all'){
+    spotlight.style.display = '';
+    cards.forEach(c => c.style.display = '');
+    return;
+  }
+  spotlight.style.display = spotlight.dataset.industry === industry ? '' : 'none';
+  cards.forEach(c => {
+    c.style.display = c.dataset.industry === industry ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Study: Horizon Stone — Vượt giới hạn QuickBooks | ERPVietResearch</title>
+<meta name="description" content="Horizon Stone chuyển từ QuickBooks sang Business Central — quản lý BOM, serialized inventory và mobile WMS cho nhà máy 160.000 sqft.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+  .article-layout { display: grid; grid-template-columns: 1fr 300px; gap: 48px; padding: 56px 0; }
+  .article section { margin-bottom: 48px; }
+  .sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  .sec-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--amber); font-weight: 500; }
+  .sec-head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; }
+  .article p { font-size: 15px; color: #3a3a3f; line-height: 1.65; margin-bottom: 16px; }
+  .article ul { padding-left: 20px; margin-bottom: 16px; }
+  .article ul li { font-size: 14.5px; color: #3a3a3f; line-height: 1.6; margin-bottom: 8px; }
+  .module-block { border: 1px solid var(--line); padding: 20px 24px; margin: 20px 0; }
+  .mod-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--amber); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .mod-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 10px; }
+  .quote-block { border-left: 2px solid var(--amber); padding: 14px 20px; background: rgba(232,162,61,0.05); margin: 24px 0; font-style: italic; font-size: 14.5px; color: var(--steel); }
+  .quote-block cite { display: block; font-style: normal; font-size: 11px; font-family: 'JetBrains Mono', monospace; margin-top: 8px; }
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); margin: 20px 0; }
+  .result-item { background: var(--paper); padding: 20px; }
+  .result-item .r-icon { font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal); margin-bottom: 8px; }
+  .result-item h4 { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .result-item p { font-size: 13px; margin-bottom: 0; }
+  .sidebar { position: sticky; top: 80px; display: flex; flex-direction: column; gap: 24px; }
+  .sidebar-card { border: 1px solid var(--line); padding: 20px; background: var(--white); }
+  .sidebar-card h4 { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--steel); margin-bottom: 14px; }
+  .sidebar-row { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .sidebar-row:last-child { border-bottom: none; }
+  .sidebar-row .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--steel); text-transform: uppercase; letter-spacing: 0.06em; }
+  .sidebar-row .val { font-weight: 600; }
+  .sol-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .sol-chip { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 3px 8px; border: 1px solid var(--line-strong); color: var(--steel); }
+  .stat-bar-detail { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); margin-top: 32px; }
+  .stat-bar-detail-item { background: var(--white); padding: 20px; font-family: 'JetBrains Mono', monospace; }
+  .stat-bar-detail-item .num { display: block; font-size: 22px; font-weight: 700; color: var(--amber); margin-bottom: 4px; }
+  .stat-bar-detail-item .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--steel); }
+  .lesson-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .lesson-item:last-child { border-bottom: none; }
+  .lesson-num { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--amber); font-weight: 700; min-width: 28px; }
+  .lesson-item h4 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .lesson-item p { font-size: 13.5px; margin-bottom: 0; }
+  .related-links { display: flex; flex-direction: column; gap: 10px; }
+  .related-link { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .related-link:last-child { border-bottom: none; }
+  @media(max-width:900px) { .article-layout { grid-template-columns: 1fr; } .stat-bar-detail { grid-template-columns: 1fr 1fr; } .results-grid { grid-template-columns: 1fr; } .sidebar { position: static; } }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Case Study — Sản xuất / Vật liệu xây dựng — Jan 2023</div>
+    <h1>Vượt giới hạn QuickBooks:<br><em>Lộ trình 2 giai đoạn</em> cho nhà sản xuất</h1>
+    <p class="lede">Horizon Stone — nhà máy 160.000 sqft sản xuất ốp đá nhân tạo tại Tennessee — không thể quản lý BOM, serial hóa thành phẩm, hay mobile kho với QuickBooks. Giải pháp: Business Central + Warehouse Insight triển khai theo 2 phase.</p>
+    <div class="stat-bar-detail">
+      <div class="stat-bar-detail-item"><span class="num">160,000</span><span class="lbl">sqft nhà máy</span></div>
+      <div class="stat-bar-detail-item"><span class="num">2 phase</span><span class="lbl">Lộ trình triển khai</span></div>
+      <div class="stat-bar-detail-item"><span class="num">0 lỗi</span><span class="lbl">Picking sai sau go-live</span></div>
+      <div class="stat-bar-detail-item"><span class="num">100%</span><span class="lbl">Truy xuất ngược finished goods</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="article-layout">
+
+    <article class="article">
+
+      <section>
+        <div class="sec-head"><span class="sec-num">01</span><h2>Bối cảnh doanh nghiệp</h2></div>
+        <p>Horizon Stone được thành lập năm 2003, chuyên sản xuất ốp đá nhân tạo cao cấp cho các dự án dân dụng và thương mại. Sản phẩm được phân phối qua mạng lưới đại lý toàn nước Mỹ từ nhà máy hiện đại 160.000 sqft tại Chattanooga, Tennessee.</p>
+        <p>Khi quy mô sản xuất mở rộng, hệ thống QuickBooks đang dùng bắt đầu bộc lộ giới hạn nghiêm trọng: không thể quản lý serialized inventory, không có BOM, không hỗ trợ thiết bị di động trên sàn kho — dẫn đến không theo dõi được tiêu hao NVL thực tế và không đảm bảo khả năng truy xuất sản phẩm.</p>
+      </section>
+
+      <section>
+        <div class="sec-head"><span class="sec-num">02</span><h2>Bài toán cần giải quyết</h2></div>
+        <p>QuickBooks thiếu các tính năng căn bản mà một nhà sản xuất cần để vận hành chính xác:</p>
+        <ul>
+          <li><b>Không có Bill of Materials (BOM):</b> Không thể theo dõi tiêu hao NVL theo từng lệnh sản xuất, dẫn đến sai lệch giữa kế hoạch và thực tế.</li>
+          <li><b>Không quản lý được serialized finished goods:</b> Không gán số serial cho thành phẩm, không có khả năng truy xuất ngược khi cần.</li>
+          <li><b>Không hỗ trợ mobile trên sàn kho:</b> Nhân viên kho phải ghi nhận thủ công, tăng nguy cơ sai sót và làm chậm quy trình picking.</li>
+          <li><b>Lập kế hoạch sản xuất theo cảm tính:</b> Không có công cụ dự báo và scheduling tích hợp với tồn kho thực tế.</li>
+          <li><b>Báo cáo sản xuất nghèo nàn:</b> Thiếu các chỉ số quan trọng: tỷ lệ giao hàng đúng hạn, hiệu suất sản xuất, tỷ lệ lỗi QC.</li>
+        </ul>
+      </section>
+
+      <section>
+        <div class="sec-head"><span class="sec-num">03</span><h2>Giải pháp triển khai</h2></div>
+        <p>ACE Micro — Microsoft Partner chuyên ngành sản xuất nhẹ và phân phối — đề xuất lộ trình 2 giai đoạn để đảm bảo chuyển đổi có kiểm soát, không gián đoạn sản xuất.</p>
+        <div class="module-block">
+          <div class="mod-label">Giai đoạn 1</div>
+          <div class="mod-name">Triển khai Microsoft Dynamics 365 Business Central</div>
+          <p>Thay thế hoàn toàn QuickBooks. BC cung cấp quản lý tồn kho nâng cao (BOM, serialization, realtime), lập lịch sản xuất, và báo cáo tùy chỉnh theo các chỉ số sản xuất quan trọng.</p>
+        </div>
+        <div class="module-block">
+          <div class="mod-label">Giai đoạn 2</div>
+          <div class="mod-name">Warehouse Insight (Insight Works) + Honeywell CK65</div>
+          <p>Lấp khoảng trống còn lại tại kho: nhân viên dùng Honeywell CK65 mobile computers để pick đơn hàng và scan serial number trực tiếp vào BC — không cần giấy tờ, không cần nhập liệu lại.</p>
+        </div>
+        <div class="quote-block">
+          <p>"Tôi cần hệ thống có thể theo dõi từng viên đá từ lúc vào kho nguyên liệu đến khi ra đến tay đại lý. QuickBooks không làm được điều đó."</p>
+          <cite>— Đội vận hành, Horizon Stone</cite>
+        </div>
+        <p>Điểm mạnh của cách tiếp cận 2 giai đoạn: Phase 1 ổn định nền tảng ERP trước, Phase 2 tối ưu quy trình kho — đội ngũ có thời gian làm quen với BC trước khi đưa mobile vào sàn kho.</p>
+      </section>
+
+      <section>
+        <div class="sec-head"><span class="sec-num">04</span><h2>Kết quả đạt được</h2></div>
+        <div class="results-grid">
+          <div class="result-item">
+            <div class="r-icon">Chất lượng dữ liệu</div>
+            <h4>Dữ liệu sản xuất chính xác</h4>
+            <p>Lần đầu tiên có cái nhìn rõ về tiêu hao NVL thực tế và năng suất theo từng lệnh sản xuất.</p>
+          </div>
+          <div class="result-item">
+            <div class="r-icon">Truy xuất</div>
+            <h4>100% truy xuất ngược thành phẩm</h4>
+            <p>Serialization cho phép truy xuất từ đại lý về đến lô NVL đầu vào — trước đây hoàn toàn không thể.</p>
+          </div>
+          <div class="result-item">
+            <div class="r-icon">Giảm lỗi</div>
+            <h4>Mobile cảnh báo pick sai item</h4>
+            <p>Honeywell CK65 tự động cảnh báo khi nhân viên scan sai sản phẩm, giảm đáng kể lỗi fulfillment.</p>
+          </div>
+          <div class="result-item">
+            <div class="r-icon">Kiểm soát chất lượng</div>
+            <h4>Quy trình QC được hệ thống hóa</h4>
+            <p>Báo cáo thành phẩm nhanh và chính xác — duy trì tiêu chuẩn chất lượng cao cấp của thương hiệu.</p>
+          </div>
+          <div class="result-item">
+            <div class="r-icon">Tối ưu kho</div>
+            <h4>Chiến lược pick thông minh hơn</h4>
+            <p>Giảm tình trạng "customer warehousing" tại khu vực shipping, tối ưu không gian kho.</p>
+          </div>
+          <div class="result-item">
+            <div class="r-icon">Dịch vụ khách hàng</div>
+            <h4>Phản hồi đại lý nhanh hơn</h4>
+            <p>Data vận hành realtime cho phép trả lời câu hỏi về đơn hàng, tồn kho ngay lập tức.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="sec-head"><span class="sec-num">05</span><h2>Bài học cho doanh nghiệp Việt Nam</h2></div>
+        <div class="lesson-item"><div class="lesson-num">01</div><div><h4>Lộ trình 2 giai đoạn hoạt động hiệu quả</h4><p>Triển khai ERP trước, sau đó mới đưa mobile WMS vào sàn kho. Đội ngũ có thời gian thích nghi, giảm rủi ro go-live.</p></div></div>
+        <div class="lesson-item"><div class="lesson-num">02</div><div><h4>Đối tác triển khai quan trọng hơn phần mềm</h4><p>ACE Micro hiểu sâu về sản xuất nhẹ và phân phối — lựa chọn partner chuyên ngành thay vì partner tổng hợp.</p></div></div>
+        <div class="lesson-item"><div class="lesson-num">03</div><div><h4>Mobile tại shop floor không cần phức tạp</h4><p>Honeywell CK65 + Warehouse Insight đơn giản, dễ dùng — nhân viên kho không cần đào tạo dài ngày.</p></div></div>
+        <div class="lesson-item"><div class="lesson-num">04</div><div><h4>Đừng chờ đến khi QuickBooks "vỡ"</h4><p>Chuyển đổi sớm, khi còn ổn định, dễ hơn nhiều so với khi hệ thống cũ đã thành bottleneck nghiêm trọng.</p></div></div>
+      </section>
+
+    </article>
+
+    <aside class="sidebar">
+      <div class="sidebar-card">
+        <h4>Tóm tắt dự án</h4>
+        <div class="sidebar-row"><span class="lbl">Doanh nghiệp</span><span class="val">Horizon Stone</span><span style="font-size:12px;color:var(--steel);">Chattanooga, Tennessee, USA</span></div>
+        <div class="sidebar-row"><span class="lbl">Ngành</span><span class="val">Sản xuất – Ốp đá nhân tạo</span></div>
+        <div class="sidebar-row"><span class="lbl">Quy mô</span><span class="val">SMB — Phân phối toàn quốc</span></div>
+        <div class="sidebar-row"><span class="lbl">Hệ thống cũ</span><span class="val">QuickBooks + Excel</span></div>
+        <div class="sidebar-row"><span class="lbl">Giải pháp</span><div class="sol-chips"><span class="sol-chip">D365 BC</span><span class="sol-chip">Warehouse Insight</span><span class="sol-chip">Honeywell CK65</span></div></div>
+        <div class="sidebar-row"><span class="lbl">Partner</span><span class="val">ACE Micro + Insight Works</span></div>
+      </div>
+      <div class="sidebar-card">
+        <h4>Case liên quan</h4>
+        <div class="related-links">
+          <a class="related-link" href="index.html">Jim Lawrence Ironworks <span>→</span></a>
+          <a class="related-link" href="index.html">Primal Pet Group <span>→</span></a>
+          <a class="related-link" href="index.html">AGIS <span>→</span></a>
+        </div>
+      </div>
+      <div class="sidebar-card" style="background:var(--ink);color:var(--paper);">
+        <h4 style="color:var(--amber);">Bài toán tương tự?</h4>
+        <p style="font-size:13px;color:#cfcfd2;margin-bottom:16px;">Đặt lịch 30 phút để phân tích bài toán của bạn và xác định lộ trình phù hợp.</p>
+        <a class="btn btn-paper btn-sm" href="../dat-lich-tu-van.html">Đặt lịch tư vấn →</a>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="cta-strip">
+  <div class="wrap">
+    <h2>Doanh nghiệp bạn đang gặp bài toán tương tự?</h2>
+    <p>Tư vấn 30 phút miễn phí — phân tích bài toán cụ thể và đề xuất lộ trình phù hợp.</p>
+    <a class="btn btn-paper" href="../dat-lich-tu-van.html">Đặt lịch tư vấn →</a>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+</body>
+</html>

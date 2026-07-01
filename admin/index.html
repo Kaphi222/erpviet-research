@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — ERPVietResearch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1C1B1F;--steel:#2E4057;--amber:#E8A23D;--paper:#F7F5F0;--teal:#4A7C7C;--line:rgba(28,27,31,.13);--white:#fff;--sidebar:240px;--success:#2E7D55;--error:#C0392B;}
+body{font-family:'Inter',sans-serif;background:#f0eeea;color:var(--ink);display:flex;min-height:100vh;}
+a{color:inherit;text-decoration:none;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--ink);color:var(--white);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;}
+.sb-logo{padding:20px 20px 16px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sb-logo span{color:var(--teal);}
+.sb-logo small{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:#666;font-weight:400;margin-top:2px;letter-spacing:.05em;}
+.sb-section{padding:16px 12px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#555;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;border-radius:3px;margin:1px 8px;font-size:13.5px;transition:background .12s;color:#cfcfd2;}
+.sb-item:hover{background:rgba(255,255,255,.06);}
+.sb-item.active{background:rgba(74,124,124,.25);color:var(--white);}
+.sb-item .icon{font-size:14px;width:18px;text-align:center;}
+.sb-item .badge{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(232,162,61,.2);color:var(--amber);padding:1px 6px;border-radius:10px;}
+.sb-footer{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,.06);font-size:11px;color:#555;}
+.sb-footer a{color:#888;}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.topbar h1{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;}
+.topbar-right{display:flex;gap:10px;align-items:center;}
+.btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;padding:8px 16px;border:none;cursor:pointer;border-radius:2px;transition:all .14s;}
+.btn-primary{background:var(--teal);color:var(--white);}
+.btn-primary:hover{background:#3d6b6b;}
+.btn-secondary{background:transparent;border:1.5px solid var(--line-strong,rgba(28,27,31,.4));color:var(--steel);}
+.btn-secondary:hover{border-color:var(--ink);color:var(--ink);}
+.btn-amber{background:var(--amber);color:var(--ink);}
+.btn-amber:hover{background:#d4922e;}
+.btn-danger{background:transparent;border:1.5px solid rgba(192,57,43,.3);color:var(--error);}
+.btn-danger:hover{background:rgba(192,57,43,.06);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.content{padding:28px;flex:1;}
+
+/* PANELS */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--white);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:4px;}
+.stat-card .num{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;}
+.stat-card .lbl{font-size:12px;color:var(--steel);}
+.stat-card .sub{font-size:11px;color:#aaa;font-family:'JetBrains Mono',monospace;margin-top:4px;}
+
+/* TABLE */
+.table-wrap{background:var(--white);border:1px solid var(--line);}
+.table-toolbar{padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);}
+.table-toolbar h2{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin-right:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--steel);padding:10px 14px;text-align:left;border-bottom:2px solid var(--line);background:var(--paper);}
+td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;}
+tr:hover td{background:#fafaf8;}
+.td-id{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--steel);}
+.td-tag{display:inline-block;font-size:11px;font-family:'JetBrains Mono',monospace;padding:2px 8px;background:rgba(74,124,124,.1);color:var(--teal);border-radius:2px;}
+.td-featured{display:inline-block;font-size:10px;padding:2px 7px;background:rgba(232,162,61,.15);color:#b07a1e;border-radius:2px;font-family:'JetBrains Mono',monospace;}
+.td-actions{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;}
+.modal{background:var(--white);width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;border-radius:2px;}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+.modal-header h3{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;}
+.modal-close{background:none;border:none;cursor:pointer;font-size:18px;color:var(--steel);line-height:1;padding:4px;}
+.modal-body{padding:24px;overflow-y:auto;flex:1;}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-row.full{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;}
+.field input,.field select,.field textarea{border:1.5px solid rgba(28,27,31,.3);padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);border-radius:2px;outline:none;width:100%;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);}
+.field textarea{resize:vertical;min-height:80px;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.field .hint{font-size:11px;color:#999;}
+.checkbox-row{display:flex;gap:8px;align-items:center;margin-bottom:16px;}
+.checkbox-row input{accent-color:var(--teal);}
+.checkbox-row label{font-size:13px;}
+
+/* JSON VIEW */
+.json-view{background:#1a1a1a;color:#d4d4d4;padding:20px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;overflow-x:auto;white-space:pre;max-height:400px;overflow-y:auto;}
+.json-view .jk{color:#9cdcfe;}
+.json-view .jv-str{color:#ce9178;}
+.json-view .jv-num{color:#b5cea8;}
+.json-view .jv-bool{color:#569cd6;}
+
+/* ALERT */
+.alert{padding:10px 14px;border-radius:2px;font-size:13px;margin-bottom:16px;border-left:3px solid;}
+.alert-success{background:#ecf7f0;border-color:var(--success);color:var(--success);}
+.alert-info{background:#eef3ff;border-color:#4a6cc0;color:#3d5ca8;}
+
+/* GUIDE CARDS */
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;}
+.guide-card{background:var(--white);border:1px solid var(--line);padding:20px;}
+.guide-card h3{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.guide-card ol,.guide-card ul{padding-left:18px;font-size:13px;color:var(--steel);line-height:1.8;}
+.guide-card .code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--paper);padding:8px 12px;margin-top:10px;border-left:2px solid var(--amber);color:var(--steel);}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 24px;color:var(--steel);}
+.empty .icon{font-size:36px;margin-bottom:12px;}
+.empty p{font-size:13px;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-logo">ERP<span>Việt</span>Research <small>Admin Panel v1.0</small></div>
+  <div class="sb-section">Nội dung</div>
+  <div class="sb-item active" onclick="showPanel('industries')"><span class="icon">🏭</span>Ngành nghề<span class="badge" id="badge-industries">5</span></div>
+  <div class="sb-item" onclick="showPanel('cases')"><span class="icon">📋</span>Case Studies<span class="badge" id="badge-cases">7</span></div>
+  <div class="sb-item" onclick="showPanel('site')"><span class="icon">⚙️</span>Cấu hình site</div>
+  <div class="sb-section">Công cụ</div>
+  <div class="sb-item" onclick="showPanel('guide')"><span class="icon">📖</span>Hướng dẫn publish</div>
+  <div class="sb-item" onclick="showPanel('preview')"><span class="icon">🔗</span>Links trang</div>
+  <div class="sb-footer">
+    <div style="margin-bottom:4px;">Dữ liệu lưu trong <code>localStorage</code></div>
+    <a href="../index.html">← Về trang chủ</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h1 id="panelTitle">Quản lý Ngành nghề</h1>
+    <div class="topbar-right">
+      <button class="btn btn-secondary btn-sm" onclick="resetDraft()" title="Xóa draft, load lại từ file JSON">↺ Reset</button>
+      <button class="btn btn-amber btn-sm" onclick="exportCurrent()">⬇ Xuất JSON</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="alertBox" style="display:none;"></div>
+
+    <!-- INDUSTRIES PANEL -->
+    <div class="panel active" id="panel-industries">
+      <div class="stats-row">
+        <div class="stat-card"><div class="num" id="s-ind-count">0</div><div class="lbl">Ngành có trong database</div><div class="sub">data/industries.json</div></div>
+        <div class="stat-card"><div class="num" id="s-ind-pain">0</div><div class="lbl">Pain points (tổng)</div><div class="sub">Trung bình /ngành</div></div>
+        <div class="stat-card"><div class="num" id="s-ind-mod">0</div><div class="lbl">Key modules (tổng)</div><div class="sub">Các module nổi bật</div></div>
+        <div class="stat-card"><div class="num">5</div><div class="lbl">Ngành hỗ trợ</div><div class="sub">Sản xuất · Phân phối · Bán lẻ · F&B · Dịch vụ</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <h2>Danh sách ngành</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddIndustry()">+ Thêm ngành</button>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>Tên ngành</th><th>Tagline</th><th>Pain Points</th><th>Modules</th><th>Hành động</th></tr></thead>
+          <tbody id="ind-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CASES PANEL -->
+    <div class="panel" id="panel-cases">
+      <div class="stats-row">
+        <div class="stat-card"><div class="num" id="s-case-count">0</div><div class="lbl">Case studies</div><div class="sub">data/case-studies.json</div></div>
+        <div class="stat-card"><div class="num" id="s-case-featured">0</div><div class="lbl">Featured (spotlight)</div><div class="sub">Hiện trên homepage</div></div>
+        <div class="stat-card"><div class="num" id="s-case-ind">0</div><div class="lbl">Ngành được đại diện</div><div class="sub">Số ngành có case</div></div>
+        <div class="stat-card"><div class="num" id="s-case-recent">—</div><div class="lbl">Case mới nhất</div><div class="sub">Theo trường date</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <h2>Danh sách case study</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddCase()">+ Thêm case</button>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>Công ty</th><th>Ngành</th><th>Tiêu đề</th><th>Ngày</th><th>Featured</th><th>Hành động</th></tr></thead>
+          <tbody id="case-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SITE CONFIG PANEL -->
+    <div class="panel" id="panel-site">
+      <div class="table-wrap" style="padding:28px;max-width:640px;">
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:20px;">Cấu hình toàn site</h2>
+        <div id="siteForm"></div>
+        <div style="margin-top:20px;display:flex;gap:10px;">
+          <button class="btn btn-primary" onclick="saveSiteConfig()">Lưu thay đổi</button>
+          <button class="btn btn-amber" onclick="exportCurrent()">Xuất site.json</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDE PANEL -->
+    <div class="panel" id="panel-guide">
+      <div class="alert alert-info">📌 Workflow: Chỉnh sửa trên Admin Panel → Xuất JSON → Commit lên GitHub → GitHub Pages tự cập nhật</div>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h3>📋 Workflow cập nhật nội dung</h3>
+          <ol>
+            <li>Chỉnh sửa dữ liệu trong Admin Panel</li>
+            <li>Nhấn <strong>Xuất JSON</strong> để tải file về máy</li>
+            <li>Thay file cũ trong thư mục <code>/data/</code></li>
+            <li>Commit và push lên GitHub</li>
+            <li>GitHub Pages tự động cập nhật (~1-2 phút)</li>
+          </ol>
+          <div class="code">git add data/industries.json<br>git commit -m "Update: thêm ngành XYZ"<br>git push origin main</div>
+        </div>
+        <div class="guide-card">
+          <h3>🚀 Publish lên GitHub Pages</h3>
+          <ol>
+            <li>Tạo repository mới trên GitHub</li>
+            <li>Push toàn bộ code lên branch <code>main</code></li>
+            <li>Vào Settings → Pages</li>
+            <li>Source: <strong>Deploy from branch</strong></li>
+            <li>Branch: <strong>main</strong>, Folder: <strong>/ (root)</strong></li>
+            <li>Save → chờ ~2 phút để deploy</li>
+          </ol>
+          <div class="code">Site URL: https://&lt;username&gt;.github.io/&lt;repo-name&gt;</div>
+        </div>
+        <div class="guide-card">
+          <h3>🌐 Cấu hình tên miền riêng</h3>
+          <ol>
+            <li>Mua tên miền (Inet, Matbao, Namecheap...)</li>
+            <li>Thêm CNAME vào file <code>/CNAME</code> trong repo</li>
+            <li>Vào DNS manager, thêm CNAME record:<br><code>www → &lt;username&gt;.github.io</code></li>
+            <li>Vào GitHub Settings → Pages → Custom domain</li>
+            <li>Bật "Enforce HTTPS" khi DNS đã propagate</li>
+          </ol>
+          <div class="code">CNAME file: www.erpvietresearch.com</div>
+        </div>
+        <div class="guide-card">
+          <h3>✏️ Thêm case study mới</h3>
+          <ol>
+            <li>Nhấn <strong>+ Thêm case</strong> trong tab Case Studies</li>
+            <li>Điền đầy đủ thông tin</li>
+            <li>Đặt Featured = true nếu muốn hiện spotlight</li>
+            <li>Xuất JSON → thay file <code>/data/case-studies.json</code></li>
+            <li>(Tùy chọn) Tạo thêm trang chi tiết trong <code>/pages/case-studies/</code></li>
+          </ol>
+          <div class="code">Mỗi case cần: id, slug, company, industry,<br>title, summary, results[], date, featured</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW LINKS PANEL -->
+    <div class="panel" id="panel-preview">
+      <div class="table-wrap" style="padding:24px;">
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:20px;">Tất cả trang trong website</h2>
+        <table>
+          <thead><tr><th>Trang</th><th>Đường dẫn</th><th>Mô tả</th><th>Link</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Homepage</strong></td><td class="td-id">index.html</td><td>Trang chủ, hero, ngành, case studies</td><td><a href="../index.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>Sản xuất</td><td class="td-id">pages/nganh/san-xuat.html</td><td>Landing page ngành sản xuất</td><td><a href="../pages/nganh/san-xuat.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>Phân phối</td><td class="td-id">pages/nganh/phan-phoi.html</td><td>Landing page ngành phân phối</td><td><a href="../pages/nganh/phan-phoi.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>Bán lẻ</td><td class="td-id">pages/nganh/ban-le.html</td><td>Landing page ngành bán lẻ</td><td><a href="../pages/nganh/ban-le.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>F&B</td><td class="td-id">pages/nganh/fb.html</td><td>Landing page ngành F&B</td><td><a href="../pages/nganh/fb.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>Dịch vụ & Dự án</td><td class="td-id">pages/nganh/dich-vu-du-an.html</td><td>Landing page ngành dịch vụ</td><td><a href="../pages/nganh/dich-vu-du-an.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>Case Studies</td><td class="td-id">pages/case-studies/index.html</td><td>Thư viện case study có bộ lọc</td><td><a href="../pages/case-studies/index.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>Horizon Stone</td><td class="td-id">pages/case-studies/horizon-stone.html</td><td>Case study chi tiết dạng article</td><td><a href="../pages/case-studies/horizon-stone.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>Đặt lịch tư vấn</td><td class="td-id">pages/dat-lich-tu-van.html</td><td>Form đặt lịch 4 bước</td><td><a href="../pages/dat-lich-tu-van.html" target="_blank" style="color:var(--teal);">Mở →</a></td></tr>
+            <tr><td>Admin Panel</td><td class="td-id">admin/index.html</td><td>Trang này</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" style="display:none;" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Edit</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+      <button class="btn btn-primary" id="modalSaveBtn" onclick="modalSave()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

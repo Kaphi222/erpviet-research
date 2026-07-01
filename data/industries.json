@@ -1,0 +1,87 @@
+[
+  {
+    "id": "san-xuat",
+    "slug": "pages/nganh/san-xuat.html",
+    "label": "Sản Xuất",
+    "labelEn": "Manufacturing",
+    "color": "#4A7C7C",
+    "tagline": "Kiểm soát BOM, MRP và Production Order trong một hệ thống",
+    "description": "Kết nối hoạch định nguyên vật liệu, lệnh sản xuất và quản lý kho — thay thế Excel và phần mềm kế toán rời rạc.",
+    "painPoints": [
+      "Tồn kho ảo, không khớp thực tế",
+      "Không biết giá thành thực tế sản phẩm",
+      "Lập kế hoạch mua hàng theo cảm tính"
+    ],
+    "keyModules": ["Production Orders", "MRP", "Capacity Planning", "Quality Management"],
+    "caseStatLabel": "Giảm tồn kho dư thừa",
+    "caseStat": "-22%"
+  },
+  {
+    "id": "ban-le",
+    "slug": "pages/nganh/ban-le.html",
+    "label": "Bán Lẻ",
+    "labelEn": "Retail",
+    "color": "#2E4057",
+    "tagline": "Đồng bộ tồn kho và omnichannel cho chuỗi cửa hàng",
+    "description": "Quản lý POS, tồn kho đa cửa hàng, loyalty và phân tích biên lợi nhuận theo thời gian thực.",
+    "painPoints": [
+      "Lệch tồn kho giữa cửa hàng và kho tổng",
+      "Không thấy biên lợi nhuận theo thời gian thực",
+      "Trải nghiệm khách hàng phân mảnh giữa các kênh"
+    ],
+    "keyModules": ["POS", "Multi-location Inventory", "Item Tracking", "Sales & Margin Analysis"],
+    "caseStatLabel": "Giảm thời gian kiểm kê",
+    "caseStat": "-40%"
+  },
+  {
+    "id": "phan-phoi",
+    "slug": "pages/nganh/phan-phoi.html",
+    "label": "Phân Phối",
+    "labelEn": "Distribution",
+    "color": "#E8A23D",
+    "tagline": "Không mất đơn hàng giữa kho và đội bán hàng",
+    "description": "Kiểm soát đơn hàng ATP, hạn mức tín dụng khách hàng và tối ưu lộ trình giao hàng.",
+    "painPoints": [
+      "Nhân viên bán không thấy tồn kho thực",
+      "Hạn mức tín dụng không được kiểm soát",
+      "Tối ưu lộ trình giao hàng thủ công"
+    ],
+    "keyModules": ["Sales Order ATP", "Warehouse Shipment", "Customer Credit Limit", "Route Management"],
+    "caseStatLabel": "Giảm đơn bị hủy",
+    "caseStat": "-50%"
+  },
+  {
+    "id": "fb",
+    "slug": "pages/nganh/fb.html",
+    "label": "F&B",
+    "labelEn": "Food & Beverage",
+    "color": "#7C4A6A",
+    "tagline": "Truy xuất lot và FEFO cho an toàn thực phẩm",
+    "description": "Quản lý hạn sử dụng, truy xuất nguồn gốc và công thức sản xuất F&B theo chuẩn ISO 22000.",
+    "painPoints": [
+      "Hàng hết hạn không được phát hiện kịp",
+      "Không truy xuất được nguồn gốc lô hàng",
+      "Định mức nguyên liệu và yield không chính xác"
+    ],
+    "keyModules": ["Item Tracking (Lot/Expiry)", "FEFO Picking", "Recipe/Production BOM", "Lot Traceability"],
+    "caseStatLabel": "Giảm hao phí hết hạn",
+    "caseStat": "-60%"
+  },
+  {
+    "id": "dich-vu-du-an",
+    "slug": "pages/nganh/dich-vu-du-an.html",
+    "label": "Dịch Vụ / Dự Án",
+    "labelEn": "Service & Project",
+    "color": "#7C6A4A",
+    "tagline": "Không lỗ thầm lặng trên từng dự án",
+    "description": "Theo dõi chi phí dự án, timesheet, và phân tích lợi nhuận theo dự án theo thời gian thực.",
+    "painPoints": [
+      "Không biết dự án lỗ/lãi đến khi đóng dự án",
+      "Timesheet không gắn với dự án",
+      "Phân bổ nguồn lực theo cảm tính"
+    ],
+    "keyModules": ["Job/Project Management", "Timesheet", "Job Costing & WIP", "Resource Planning"],
+    "caseStatLabel": "Tăng billable hours",
+    "caseStat": "+25%"
+  }
+]

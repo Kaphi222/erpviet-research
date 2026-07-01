@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Central cho Ngành Dịch Vụ & Dự Án | ERPVietResearch</title>
+<meta name="description" content="Phân tích module Business Central cho công ty dịch vụ, tư vấn, IT — Job Costing, Timesheet, Resource Planning, lợi nhuận dự án realtime.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Microsoft Dynamics 365 — Ngành Dịch Vụ &amp; Quản Lý Dự Án</div>
+      <h1>ERP cho công ty dịch vụ <em>không lỗ thầm lặng</em> trên từng dự án</h1>
+      <p class="lede">Business Central theo dõi giờ công, ngân sách, và lợi nhuận theo từng dự án theo thời gian thực — thay vì chỉ biết dự án lãi hay lỗ sau khi đã đóng sổ.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
+        <a class="btn btn-secondary" href="#case-study">Xem case study</a>
+      </div>
+    </div>
+    <div class="diagram">
+      <div class="diagram-title">/ Sơ đồ module — Quy trình dịch vụ &amp; dự án</div>
+      <div class="factory-node"><span class="tag">01 — LẬP DỰ ÁN</span>Project Planning &amp; Budgeting</div>
+      <div class="factory-node lvl2"><span class="tag">→ RESOURCE</span>Phân bổ nhân sự theo kỹ năng &amp; tải công việc</div>
+      <div class="factory-node"><span class="tag">02 — THỰC THI</span>Timesheet &amp; Job Costing</div>
+      <div class="factory-node lvl2"><span class="tag">→ BILLING</span>Xuất hóa đơn theo Time &amp; Material / Fixed Price</div>
+      <div class="factory-node"><span class="tag">03 — PHÂN TÍCH</span>Project Profitability Analysis</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>3 bài toán doanh nghiệp dịch vụ &amp; dự án Việt Nam thường gặp</h2>
+      <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="num">01</span>
+        <h3>Không biết dự án đang lãi hay lỗ giữa chừng</h3>
+        <p>Chi phí nhân sự, vật tư, chi phí phát sinh được ghi nhận rời rạc, chỉ tổng hợp được lợi nhuận sau khi dự án đã kết thúc.</p>
+        <div class="fix">→ Giải pháp: Job Costing + Project Profitability Real-time</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">02</span>
+        <h3>Bảng chấm công không gắn được với từng dự án/khách hàng</h3>
+        <p>Nhân viên ghi giờ làm việc trên Excel rời rạc, không thể đối chiếu với ngân sách dự án hay tính phí cho khách hàng.</p>
+        <div class="fix">→ Giải pháp: Timesheet tích hợp Project &amp; Resource</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">03</span>
+        <h3>Phân bổ nhân sự không dựa trên dữ liệu tải công việc</h3>
+        <p>Quản lý dự án phân công theo cảm tính, dẫn đến người quá tải trong khi người khác rảnh rỗi, ảnh hưởng tiến độ.</p>
+        <div class="fix">→ Giải pháp: Resource Planning &amp; Capacity Utilization</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Module Business Central dành cho dịch vụ &amp; quản lý dự án</h2>
+      <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
+    </div>
+    <table class="module-table">
+      <thead>
+        <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mod-name">Job / Project Management<span class="al">Table 167 – Job</span></td>
+          <td>Lập kế hoạch ngân sách, theo dõi tiến độ và chi phí theo từng dự án</td>
+          <td>Công ty tư vấn, IT, kiến trúc, kỹ thuật</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Timesheet<span class="al">Table 951 – Time Sheet Header</span></td>
+          <td>Ghi nhận giờ làm việc của nhân viên gắn trực tiếp với từng dự án/task</td>
+          <td>Doanh nghiệp tính phí theo giờ (billable hours)</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Job Costing &amp; WIP<span class="al">Table 1001 – Job Ledger Entry</span></td>
+          <td>Tính chi phí thực tế phát sinh (nhân công, vật tư) theo từng dự án realtime</td>
+          <td>Dự án dài hạn, nhiều giai đoạn thanh toán</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Resource Planning<span class="al">Table 156 – Resource</span></td>
+          <td>Quản lý lịch làm việc, kỹ năng, và mức độ sử dụng nhân sự (utilization)</td>
+          <td>Công ty cần tối ưu phân bổ nhân sự đa dự án</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="case-study">
+  <div class="wrap">
+    <div class="case">
+      <div>
+        <div class="eyebrow eyebrow--light">Case Study</div>
+        <h3>Công ty tư vấn IT 80 nhân sự tại Hà Nội</h3>
+        <p>Triển khai Business Central với Timesheet và Job Costing, lần đầu tiên thấy được lợi nhuận từng dự án theo thời gian thực thay vì chờ đến cuối quý, trong 3 tháng.</p>
+        <a class="btn btn-outline-light" href="../case-studies/index.html">Xem tất cả case study →</a>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>+25%</b><span>Tỷ lệ billable hours</span></div>
+        <div class="stat"><b>-30%</b><span>Dự án vượt ngân sách</span></div>
+        <div class="stat"><b>3 tháng</b><span>Thời gian triển khai</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Đánh giá mức độ phù hợp của Business Central với công ty dịch vụ của bạn</h2>
+    <p>Tư vấn 30 phút, miễn phí, không ràng buộc.</p>
+    <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn →</a>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+</body>
+</html>

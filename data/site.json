@@ -1,0 +1,21 @@
+{
+  "siteName": "ERPVietResearch",
+  "tagline": "Thư viện thông tin ERP cho doanh nghiệp Việt Nam",
+  "description": "Nghiên cứu độc lập về Microsoft Dynamics 365 Business Central — case studies thực tế, phân tích module theo ngành, và tư vấn lộ trình triển khai cho SMB Việt Nam.",
+  "contact": {
+    "email": "hello@erpvietresearch.com",
+    "phone": "+84 xxx xxx xxx"
+  },
+  "stats": {
+    "caseStudies": "11+",
+    "industries": "5",
+    "deployments": "2017–2026",
+    "yearsLabel": "Dải thời gian"
+  },
+  "heroStats": [
+    { "value": "11+", "label": "Case study tham khảo" },
+    { "value": "5", "label": "Ngành công nghiệp" },
+    { "value": "30 phút", "label": "Tư vấn miễn phí" },
+    { "value": "SMB", "label": "Đối tượng phù hợp" }
+  ]
+}

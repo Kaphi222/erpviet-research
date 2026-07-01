@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đặt lịch tư vấn ERP — ERPVietResearch</title>
+<meta name="description" content="Đặt lịch tư vấn Business Central 30 phút miễn phí. Chuyên gia phân tích bài toán doanh nghiệp và đề xuất lộ trình triển khai ERP phù hợp.">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+:root { --error:#C0392B; --success:#2E7D55; }
+.page { display:grid; grid-template-columns:380px 1fr; min-height:100vh; }
+.left { background:var(--ink); color:var(--white); padding:48px 40px; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+.left .logo { margin-bottom:48px; }
+.left-eyebrow { font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:var(--amber); margin-bottom:12px; }
+.left h1 { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; line-height:1.25; margin-bottom:14px; }
+.left-sub { font-size:14px; color:#a9a9ae; line-height:1.65; margin-bottom:40px; }
+.steps { display:flex; flex-direction:column; gap:0; margin-bottom:40px; }
+.step-item { display:flex; gap:14px; align-items:flex-start; padding:14px 0; position:relative; }
+.step-item+.step-item::before { content:''; position:absolute; left:13px; top:0; width:1px; height:14px; background:rgba(255,255,255,.12); }
+.step-dot { width:28px; height:28px; border-radius:50%; border:1.5px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:11px; color:#888; transition:all .25s; }
+.step-dot.done { background:var(--teal); border-color:var(--teal); color:var(--white); }
+.step-dot.done::after { content:'✓'; font-size:12px; }
+.step-dot.active { background:var(--amber); border-color:var(--amber); color:var(--ink); font-weight:600; }
+.step-dot.active::after,.step-dot.pending::after { content:attr(data-n); }
+.step-text { padding-top:4px; }
+.step-name { font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:600; color:var(--white); margin-bottom:2px; transition:opacity .2s; }
+.step-item:not(.is-active) .step-name { opacity:.4; }
+.step-desc { font-size:12px; color:#666; }
+.step-item.is-active .step-desc { color:#a9a9ae; }
+.guarantee { margin-top:auto; border-top:1px solid rgba(255,255,255,.08); padding-top:24px; }
+.guarantee-row { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+.guarantee-icon { font-size:14px; flex-shrink:0; margin-top:2px; }
+.guarantee-text { font-size:12.5px; color:#888; line-height:1.55; }
+.guarantee-text b { color:#cfcfd2; display:block; margin-bottom:1px; }
+.right { background:var(--white); padding:48px 56px; overflow-y:auto; }
+.step-header { margin-bottom:32px; }
+.step-header .eyebrow { font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--steel); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.step-header .eyebrow::before { content:''; width:14px; height:1px; background:var(--amber); }
+.step-header h2 { font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:700; margin-bottom:6px; }
+.step-header p { font-size:14px; color:var(--steel); }
+.industry-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:28px; }
+.ind-card { border:1.5px solid var(--line-strong); padding:16px 18px; cursor:pointer; border-radius:2px; transition:all .15s; position:relative; background:var(--paper); }
+.ind-card:hover { border-color:var(--teal); background:rgba(74,124,124,.04); }
+.ind-card.selected { border-color:var(--teal); background:rgba(74,124,124,.07); }
+.ind-card.selected::after { content:'✓'; position:absolute; top:10px; right:12px; font-size:12px; color:var(--teal); font-weight:700; }
+.ind-icon { font-size:20px; margin-bottom:8px; }
+.ind-name { font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:600; margin-bottom:3px; }
+.ind-desc { font-size:12px; color:var(--steel); }
+.calendar-wrap { display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-bottom:28px; }
+.calendar { border:1px solid var(--line-strong); background:var(--paper); }
+.cal-header { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--line-strong); font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; }
+.cal-nav { background:none; border:1px solid var(--line-strong); width:28px; height:28px; border-radius:2px; cursor:pointer; font-size:14px; color:var(--steel); display:flex; align-items:center; justify-content:center; transition:all .12s; }
+.cal-nav:hover { border-color:var(--ink); color:var(--ink); }
+.cal-grid { padding:14px; }
+.cal-days-header { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; margin-bottom:8px; }
+.cal-days-header span { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--steel); text-transform:uppercase; letter-spacing:.05em; }
+.cal-days { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+.cal-day { aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:13px; border-radius:2px; cursor:pointer; transition:all .12s; border:1px solid transparent; }
+.cal-day:hover:not(.empty):not(.past):not(.sunday) { background:rgba(74,124,124,.1); border-color:var(--teal); }
+.cal-day.empty { cursor:default; }
+.cal-day.past,.cal-day.sunday { color:#ccc; cursor:not-allowed; }
+.cal-day.today { font-weight:700; color:var(--teal); border-color:rgba(74,124,124,.3); }
+.cal-day.selected { background:var(--teal); color:var(--white); border-color:var(--teal); font-weight:600; }
+.cal-day.has-slot { position:relative; }
+.cal-day.has-slot::after { content:''; position:absolute; bottom:3px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--amber); }
+.cal-day.selected::after { background:rgba(255,255,255,.6); }
+.slots-wrap {}
+.slots-title { font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--steel); margin-bottom:12px; }
+.slots-date { font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; margin-bottom:16px; color:var(--ink); min-height:20px; }
+.slots-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.slot { padding:10px 12px; border:1.5px solid var(--line-strong); border-radius:2px; cursor:pointer; text-align:center; transition:all .14s; background:var(--paper); }
+.slot:hover { border-color:var(--teal); }
+.slot.selected { background:var(--teal); border-color:var(--teal); color:var(--white); }
+.slot.booked { background:#f0f0f0; color:#bbb; cursor:not-allowed; border-color:var(--line); text-decoration:line-through; }
+.slot-time { font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; }
+.slot-type { font-size:11px; margin-top:2px; opacity:.7; }
+.slot-empty { font-size:13px; color:var(--steel); text-align:center; padding:20px; grid-column:1/-1; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px; }
+.form-grid.full { grid-template-columns:1fr; }
+.field { display:flex; flex-direction:column; gap:6px; }
+.field label { font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:var(--ink); }
+.field label .req { color:var(--amber); }
+.field input,.field select,.field textarea { border:1.5px solid var(--line-strong); padding:11px 14px; font-size:14px; font-family:'Inter',sans-serif; background:var(--paper); color:var(--ink); border-radius:2px; outline:none; transition:border-color .14s,box-shadow .14s; width:100%; }
+.field input:focus,.field select:focus,.field textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(74,124,124,.12); }
+.field input.error,.field select.error { border-color:var(--error); }
+.field .hint { font-size:12px; color:var(--steel); }
+.field .err-msg { font-size:12px; color:var(--error); display:none; }
+.field.has-error .err-msg { display:block; }
+.field textarea { resize:vertical; min-height:90px; }
+.topic-wrap { display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+.topic-pill { font-size:12.5px; padding:6px 14px; border:1.5px solid var(--line-strong); border-radius:20px; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:500; transition:all .13s; }
+.topic-pill:hover { border-color:var(--teal); }
+.topic-pill.selected { background:var(--ink); color:var(--white); border-color:var(--ink); }
+.confirm-box { border:1px solid var(--line-strong); background:var(--paper); padding:28px; margin-bottom:24px; }
+.confirm-title { font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--steel); margin-bottom:16px; }
+.confirm-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:14px; }
+.confirm-row:last-child { border-bottom:none; }
+.confirm-row .key { color:var(--steel); font-weight:500; }
+.confirm-row .val { font-weight:600; text-align:right; max-width:60%; }
+.consent { display:flex; gap:10px; align-items:flex-start; margin-bottom:20px; }
+.consent input[type=checkbox] { margin-top:3px; width:15px; height:15px; accent-color:var(--teal); flex-shrink:0; }
+.consent label { font-size:13px; color:var(--steel); line-height:1.6; }
+.btn-row { display:flex; gap:12px; justify-content:space-between; align-items:center; }
+.btn-row .btn { font-size:14px; padding:13px 24px; }
+.progress-bar { height:3px; background:var(--line); margin-bottom:32px; border-radius:2px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--teal); transition:width .3s ease; border-radius:2px; }
+.success-screen { text-align:center; padding:40px 20px; }
+.success-icon { font-size:52px; margin-bottom:20px; }
+.success-screen h2 { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; margin-bottom:12px; }
+.success-screen p { font-size:15px; color:var(--steel); max-width:420px; margin:0 auto 24px; line-height:1.7; }
+.success-detail { border:1px solid var(--line-strong); background:var(--paper); padding:20px 24px; text-align:left; max-width:400px; margin:0 auto 28px; }
+.success-detail .sd-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+.success-detail .sd-row:last-child { border-bottom:none; }
+.success-detail .sd-row .k { color:var(--steel); }
+.success-detail .sd-row .v { font-weight:600; }
+.google-link { display:inline-flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px; padding:11px 20px; border:1.5px solid var(--line-strong); border-radius:2px; color:var(--steel); margin-top:8px; }
+@media(max-width:860px) {
+  .page { grid-template-columns:1fr; }
+  .left { position:static; height:auto; }
+  .right { padding:32px 24px; }
+  .calendar-wrap,.industry-grid,.form-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <a href="../index.html" class="logo" style="text-decoration:none;">ERP<span style="color:var(--teal);">Việt</span>Research</a>
+    <div class="left-eyebrow">Tư vấn chuyên sâu</div>
+    <h1>Đặt lịch tư vấn<br>Business Central</h1>
+    <p class="left-sub">30 phút, miễn phí, không ràng buộc. Chuyên gia ERP sẽ phân tích bài toán cụ thể của doanh nghiệp và đề xuất lộ trình phù hợp nhất.</p>
+    <div class="steps" id="stepIndicator">
+      <div class="step-item is-active">
+        <div class="step-dot active" data-n="1"></div>
+        <div class="step-text"><div class="step-name">Ngành &amp; chủ đề</div><div class="step-desc">Chọn lĩnh vực cần tư vấn</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot pending" data-n="2"></div>
+        <div class="step-text"><div class="step-name">Ngày &amp; giờ</div><div class="step-desc">Chọn lịch phù hợp với bạn</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot pending" data-n="3"></div>
+        <div class="step-text"><div class="step-name">Thông tin liên hệ</div><div class="step-desc">Để chúng tôi chuẩn bị trước</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot pending" data-n="4"></div>
+        <div class="step-text"><div class="step-name">Xác nhận lịch</div><div class="step-desc">Kiểm tra và gửi đăng ký</div></div>
+      </div>
+    </div>
+    <div class="guarantee">
+      <div class="guarantee-row"><span class="guarantee-icon">🔒</span><span class="guarantee-text"><b>Bảo mật thông tin</b>Thông tin của bạn không được chia sẻ với bên thứ ba.</span></div>
+      <div class="guarantee-row"><span class="guarantee-icon">📅</span><span class="guarantee-text"><b>Xác nhận trong 4 giờ</b>Chuyên gia sẽ liên hệ xác nhận ngay trong giờ làm việc.</span></div>
+      <div class="guarantee-row"><span class="guarantee-icon">🎯</span><span class="guarantee-text"><b>Tư vấn có chuẩn bị</b>Chúng tôi nghiên cứu ngành của bạn trước khi gặp.</span></div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+
+    <!-- STEP 1 -->
+    <div id="step1" class="step-panel">
+      <div class="step-header">
+        <div class="eyebrow">Bước 1 / 4</div>
+        <h2>Ngành của doanh nghiệp bạn</h2>
+        <p>Chúng tôi sẽ chuẩn bị case study và module phù hợp theo ngành trước buổi tư vấn.</p>
+      </div>
+      <div class="industry-grid" id="industryGrid">
+        <div class="ind-card" data-val="manufacturing" onclick="selectIndustry(this)"><div class="ind-icon">🏭</div><div class="ind-name">Sản xuất</div><div class="ind-desc">BOM, MRP, Production Order</div></div>
+        <div class="ind-card" data-val="distribution" onclick="selectIndustry(this)"><div class="ind-icon">🚚</div><div class="ind-name">Phân phối</div><div class="ind-desc">ATP, Credit Limit, Multi-warehouse</div></div>
+        <div class="ind-card" data-val="retail" onclick="selectIndustry(this)"><div class="ind-icon">🛍️</div><div class="ind-name">Bán lẻ</div><div class="ind-desc">POS, Inventory, Omnichannel</div></div>
+        <div class="ind-card" data-val="fb" onclick="selectIndustry(this)"><div class="ind-icon">🍜</div><div class="ind-name">F&amp;B</div><div class="ind-desc">Lot Tracking, FEFO, Truy xuất</div></div>
+        <div class="ind-card" data-val="construction" onclick="selectIndustry(this)"><div class="ind-icon">🏗️</div><div class="ind-name">Xây dựng</div><div class="ind-desc">Project Costing, Job Management</div></div>
+        <div class="ind-card" data-val="service" onclick="selectIndustry(this)"><div class="ind-icon">💼</div><div class="ind-name">Dịch vụ / Dự án</div><div class="ind-desc">Timesheet, Job Costing, Resource</div></div>
+      </div>
+      <div class="field" style="margin-bottom:24px;">
+        <label>Chủ đề muốn tư vấn <span class="req">*</span></label>
+        <div class="topic-wrap" id="topicWrap">
+          <div class="topic-pill" data-val="pricing" onclick="toggleTopic(this)">Bảng giá &amp; License</div>
+          <div class="topic-pill" data-val="implementation" onclick="toggleTopic(this)">Lộ trình triển khai</div>
+          <div class="topic-pill" data-val="migration" onclick="toggleTopic(this)">Chuyển đổi từ phần mềm cũ</div>
+          <div class="topic-pill" data-val="localization" onclick="toggleTopic(this)">Localization Việt Nam</div>
+          <div class="topic-pill" data-val="integration" onclick="toggleTopic(this)">Tích hợp hệ thống</div>
+          <div class="topic-pill" data-val="copilot" onclick="toggleTopic(this)">Copilot / AI trong BC</div>
+          <div class="topic-pill" data-val="other" onclick="toggleTopic(this)">Chủ đề khác</div>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:28px;">
+        <label>Quy mô doanh nghiệp</label>
+        <select id="companySize">
+          <option value="">-- Chọn quy mô --</option>
+          <option value="lt20">Dưới 20 nhân sự</option>
+          <option value="20-50">20 – 50 nhân sự</option>
+          <option value="50-200">50 – 200 nhân sự</option>
+          <option value="200-500">200 – 500 nhân sự</option>
+          <option value="gt500">Trên 500 nhân sự</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <span style="font-size:12px;color:var(--steel);">* Cần chọn ít nhất 1 ngành và 1 chủ đề</span>
+        <button class="btn btn-primary" onclick="goStep(2)">Chọn ngày &amp; giờ →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="step2" class="step-panel" style="display:none;">
+      <div class="step-header">
+        <div class="eyebrow">Bước 2 / 4</div>
+        <h2>Chọn ngày và khung giờ</h2>
+        <p>Buổi tư vấn kéo dài 30 phút qua Google Meet hoặc Zoom. Giờ làm việc: Thứ 2–6, 8:00–17:30 ICT.</p>
+      </div>
+      <div class="calendar-wrap">
+        <div>
+          <div class="calendar">
+            <div class="cal-header">
+              <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+              <span id="calTitle"></span>
+              <button class="cal-nav" onclick="changeMonth(1)">›</button>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-days-header"><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span></div>
+              <div class="cal-days" id="calDays"></div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--steel);font-family:'JetBrains Mono',monospace;">
+            <span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block;"></span>Có slot trống</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;"></span>Đã chọn</span>
+          </div>
+        </div>
+        <div class="slots-wrap">
+          <div class="slots-title">Khung giờ khả dụng</div>
+          <div class="slots-date" id="slotsDateLabel">← Chọn ngày để xem giờ trống</div>
+          <div class="slots-grid" id="slotsGrid"><div class="slot-empty">Vui lòng chọn ngày trong lịch</div></div>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn btn-secondary" onclick="goStep(1)">← Quay lại</button>
+        <button class="btn btn-primary" onclick="goStep(3)" id="btn2Next" disabled>Nhập thông tin →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="step3" class="step-panel" style="display:none;">
+      <div class="step-header">
+        <div class="eyebrow">Bước 3 / 4</div>
+        <h2>Thông tin liên hệ</h2>
+        <p>Để chuyên gia chuẩn bị và xác nhận lịch với bạn qua email hoặc điện thoại.</p>
+      </div>
+      <div class="form-grid">
+        <div class="field" id="field-name"><label>Họ và tên <span class="req">*</span></label><input type="text" id="fname" placeholder="Nguyễn Văn A" /><span class="err-msg">Vui lòng nhập họ tên</span></div>
+        <div class="field" id="field-company"><label>Công ty <span class="req">*</span></label><input type="text" id="fcompany" placeholder="Tên doanh nghiệp" /><span class="err-msg">Vui lòng nhập tên công ty</span></div>
+      </div>
+      <div class="form-grid">
+        <div class="field" id="field-email"><label>Email công ty <span class="req">*</span></label><input type="email" id="femail" placeholder="ten@congty.com" /><span class="err-msg">Email không hợp lệ</span></div>
+        <div class="field" id="field-phone"><label>Số điện thoại <span class="req">*</span></label><input type="tel" id="fphone" placeholder="0901 234 567" /><span class="err-msg">Vui lòng nhập số điện thoại</span></div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Chức vụ</label>
+          <select id="frole">
+            <option value="">-- Chọn chức vụ --</option>
+            <option>CEO / Giám đốc điều hành</option><option>CFO / Giám đốc tài chính</option>
+            <option>COO / Giám đốc vận hành</option><option>IT Manager</option>
+            <option>Kế toán trưởng</option><option>Trưởng phòng sản xuất</option>
+            <option>Chuyên viên ERP / IT</option><option>Khác</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Phần mềm đang dùng</label>
+          <select id="fcurrent">
+            <option value="">-- Chọn --</option>
+            <option>MISA SME / AMIS</option><option>Fast Accounting</option>
+            <option>Bravo ERP</option><option>Odoo</option>
+            <option>SAP Business One</option><option>QuickBooks</option>
+            <option>Excel / thủ công</option><option>Chưa có ERP</option><option>Khác</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Bài toán cụ thể cần giải quyết</label>
+          <textarea id="fnote" placeholder="Ví dụ: Hiện tại chúng tôi quản lý kho bằng Excel, không theo dõi được tồn kho realtime khi bán hàng ở nhiều kênh..."></textarea>
+          <span class="hint">Càng mô tả cụ thể, buổi tư vấn càng hiệu quả</span>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:24px;">
+        <button class="btn btn-secondary" onclick="goStep(2)">← Quay lại</button>
+        <button class="btn btn-primary" onclick="validateStep3()">Xem xác nhận →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div id="step4" class="step-panel" style="display:none;">
+      <div class="step-header">
+        <div class="eyebrow">Bước 4 / 4</div>
+        <h2>Xác nhận thông tin đặt lịch</h2>
+        <p>Kiểm tra lại trước khi gửi đăng ký tư vấn.</p>
+      </div>
+      <div class="confirm-box">
+        <div class="confirm-title">Thông tin buổi tư vấn</div>
+        <div class="confirm-row"><span class="key">Ngày tư vấn</span><span class="val" id="cDate">—</span></div>
+        <div class="confirm-row"><span class="key">Giờ bắt đầu</span><span class="val" id="cTime">—</span></div>
+        <div class="confirm-row"><span class="key">Hình thức</span><span class="val">Online (Google Meet / Zoom)</span></div>
+        <div class="confirm-row"><span class="key">Thời lượng</span><span class="val">30 phút</span></div>
+        <div class="confirm-row"><span class="key">Ngành</span><span class="val" id="cIndustry">—</span></div>
+        <div class="confirm-row"><span class="key">Chủ đề</span><span class="val" id="cTopics">—</span></div>
+      </div>
+      <div class="confirm-box">
+        <div class="confirm-title">Thông tin liên hệ</div>
+        <div class="confirm-row"><span class="key">Họ tên</span><span class="val" id="cName">—</span></div>
+        <div class="confirm-row"><span class="key">Công ty</span><span class="val" id="cCompany">—</span></div>
+        <div class="confirm-row"><span class="key">Email</span><span class="val" id="cEmail">—</span></div>
+        <div class="confirm-row"><span class="key">Điện thoại</span><span class="val" id="cPhone">—</span></div>
+        <div class="confirm-row"><span class="key">Phần mềm hiện tại</span><span class="val" id="cCurrent">—</span></div>
+      </div>
+      <div class="consent">
+        <input type="checkbox" id="consentCheck">
+        <label for="consentCheck">Tôi đồng ý để ERPVietResearch liên hệ xác nhận lịch và gửi thông tin tư vấn liên quan. Thông tin không được chia sẻ với bên thứ ba.</label>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(3)">← Chỉnh sửa</button>
+        <button class="btn btn-primary" id="submitBtn" onclick="submitForm()"><span id="submitLabel">📅 Xác nhận đặt lịch</span></button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="stepSuccess" style="display:none;">
+      <div class="success-screen">
+        <div class="success-icon">✅</div>
+        <h2>Đặt lịch thành công!</h2>
+        <p>Chúng tôi đã nhận được yêu cầu của bạn. Chuyên gia ERP sẽ liên hệ xác nhận lịch trong vòng <strong>4 giờ làm việc</strong>.</p>
+        <div class="success-detail">
+          <div class="sd-row"><span class="k">Ngày tư vấn</span><span class="v" id="sDate">—</span></div>
+          <div class="sd-row"><span class="k">Giờ</span><span class="v" id="sTime">—</span></div>
+          <div class="sd-row"><span class="k">Email xác nhận</span><span class="v" id="sEmail">—</span></div>
+          <div class="sd-row"><span class="k">Mã đặt lịch</span><span class="v mono" id="sCode" style="color:var(--teal);">—</span></div>
+        </div>
+        <p style="font-size:13px;color:var(--steel);">Kiểm tra hộp thư email (kể cả spam) để nhận link Google Meet / Zoom.</p>
+        <a class="google-link" href="#" id="calendarLink">📆 Thêm vào Google Calendar</a>
+        <div style="margin-top:28px;"><a href="case-studies/index.html" style="font-size:13px;color:var(--teal);font-weight:600;font-family:'Space Grotesk',sans-serif;">← Xem thêm case study tham khảo</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GOOGLE_FORM_ACTION = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+const GF_FIELDS = { name:'entry.000000001', company:'entry.000000002', email:'entry.000000003', phone:'entry.000000004', role:'entry.000000005', industry:'entry.000000006', topics:'entry.000000007', date:'entry.000000008', time:'entry.000000009', current:'entry.000000010', size:'entry.000000011', note:'entry.000000012' };
+const state = { step:1, industry:'', topics:[], companySize:'', selectedDate:null, selectedTime:'', name:'', company:'', email:'', phone:'', role:'', current:'', note:'', bookingCode:'' };
+const INDUSTRY_LABELS = { manufacturing:'Sản xuất', distribution:'Phân phối', retail:'Bán lẻ', fb:'F&B', construction:'Xây dựng', service:'Dịch vụ / Dự án' };
+const TOPIC_LABELS = { pricing:'Bảng giá & License', implementation:'Lộ trình triển khai', migration:'Chuyển đổi từ phần mềm cũ', localization:'Localization Việt Nam', integration:'Tích hợp hệ thống', copilot:'Copilot / AI trong BC', other:'Chủ đề khác' };
+const MONTHS_VI = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+let calYear, calMonth;
+function initCalendar(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();renderCalendar();}
+function hasSlots(y,m,d){const date=new Date(y,m,d);const day=date.getDay();if(day===0)return false;const today=new Date();today.setHours(0,0,0,0);if(date<=today)return false;const booked=[3,7,14,21,28];return !booked.includes(d);}
+function renderCalendar(){document.getElementById('calTitle').textContent=MONTHS_VI[calMonth]+' '+calYear;const grid=document.getElementById('calDays');grid.innerHTML='';const firstDay=new Date(calYear,calMonth,1).getDay();const startOffset=firstDay===0?6:firstDay-1;const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const today=new Date();today.setHours(0,0,0,0);for(let i=0;i<startOffset;i++){const el=document.createElement('div');el.className='cal-day empty';grid.appendChild(el);}for(let d=1;d<=daysInMonth;d++){const date=new Date(calYear,calMonth,d);const dayOfWeek=date.getDay();const el=document.createElement('div');const isPast=date<today;const isSun=dayOfWeek===0;const isToday=date.toDateString()===today.toDateString();const slots=hasSlots(calYear,calMonth,d);let cls='cal-day';if(isPast)cls+=' past';else if(isSun)cls+=' sunday';else if(slots)cls+=' has-slot';if(isToday&&!isPast)cls+=' today';if(state.selectedDate){const sel=state.selectedDate;if(sel.getFullYear()===calYear&&sel.getMonth()===calMonth&&sel.getDate()===d)cls+=' selected';}el.className=cls;el.textContent=d;if(!isPast&&!isSun&&slots){el.onclick=()=>selectDate(new Date(calYear,calMonth,d));}grid.appendChild(el);}}
+function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
+function selectDate(date){state.selectedDate=date;state.selectedTime='';document.getElementById('btn2Next').disabled=true;renderCalendar();renderSlots(date);}
+function renderSlots(date){const label=document.getElementById('slotsDateLabel');const day=date.getDay();const dayName=['Chủ nhật','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'][day];label.textContent=dayName+', '+date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear();const isSat=day===6;const allSlots=[];const end=isSat?12:17;for(let h=8;h<end;h++){allSlots.push({time:`${String(h).padStart(2,'0')}:00`,booked:false});allSlots.push({time:`${String(h).padStart(2,'0')}:30`,booked:false});}const bookedTimes=['09:00','10:30','14:00'];allSlots.forEach(s=>{if(bookedTimes.includes(s.time))s.booked=true;});const grid=document.getElementById('slotsGrid');grid.innerHTML='';allSlots.forEach(s=>{const el=document.createElement('div');el.className='slot'+(s.booked?' booked':'');el.innerHTML=`<div class="slot-time">${s.time}</div><div class="slot-type">${s.booked?'Đã đặt':'30 phút'}</div>`;if(!s.booked){el.onclick=()=>selectSlot(el,s.time);}grid.appendChild(el);});}
+function selectSlot(el,time){document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');state.selectedTime=time;document.getElementById('btn2Next').disabled=false;}
+function selectIndustry(el){document.querySelectorAll('.ind-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');state.industry=el.dataset.val;}
+function toggleTopic(el){const val=el.dataset.val;el.classList.toggle('selected');if(el.classList.contains('selected')){if(!state.topics.includes(val))state.topics.push(val);}else{state.topics=state.topics.filter(t=>t!==val);}}
+function goStep(n){if(n===2){if(!state.industry){alert('Vui lòng chọn ngành của doanh nghiệp.');return;}if(state.topics.length===0){alert('Vui lòng chọn ít nhất 1 chủ đề tư vấn.');return;}}if(n===3&&(!state.selectedDate||!state.selectedTime)){alert('Vui lòng chọn ngày và khung giờ.');return;}state.step=n;for(let i=1;i<=4;i++){const panel=document.getElementById('step'+i);if(panel)panel.style.display=i===n?'':'none';}document.getElementById('stepSuccess').style.display='none';updateStepIndicator(n);document.getElementById('progressFill').style.width=(n*25)+'%';if(n===4)fillConfirmation();}
+function updateStepIndicator(active){const items=document.querySelectorAll('.step-item');const dots=document.querySelectorAll('.step-dot');items.forEach((item,i)=>{item.classList.toggle('is-active',i+1===active);});dots.forEach((dot,i)=>{dot.className='step-dot';if(i+1<active){dot.classList.add('done');dot.textContent='';}else if(i+1===active){dot.classList.add('active');}else{dot.classList.add('pending');}});}
+function validateStep3(){const name=document.getElementById('fname').value.trim();const company=document.getElementById('fcompany').value.trim();const email=document.getElementById('femail').value.trim();const phone=document.getElementById('fphone').value.trim();let valid=true;const setErr=(id,field,show)=>{document.getElementById(id).classList.toggle('has-error',show);document.getElementById(field).classList.toggle('error',show);if(show)valid=false;};setErr('field-name','fname',!name);setErr('field-company','fcompany',!company);setErr('field-email','femail',!email||!email.includes('@'));setErr('field-phone','fphone',!phone||phone.length<9);if(!valid)return;state.name=name;state.company=company;state.email=email;state.phone=phone;state.role=document.getElementById('frole').value;state.current=document.getElementById('fcurrent').value;state.note=document.getElementById('fnote').value;state.companySize=document.getElementById('companySize').value;goStep(4);}
+function fillConfirmation(){const d=state.selectedDate;const dayNames=['Chủ nhật','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'];const dateStr=dayNames[d.getDay()]+', '+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();document.getElementById('cDate').textContent=dateStr;document.getElementById('cTime').textContent=state.selectedTime+' ICT (GMT+7)';document.getElementById('cIndustry').textContent=INDUSTRY_LABELS[state.industry]||state.industry;document.getElementById('cTopics').textContent=state.topics.map(t=>TOPIC_LABELS[t]||t).join(', ');document.getElementById('cName').textContent=state.name;document.getElementById('cCompany').textContent=state.company;document.getElementById('cEmail').textContent=state.email;document.getElementById('cPhone').textContent=state.phone;document.getElementById('cCurrent').textContent=state.current||'Chưa khai báo';}
+async function submitForm(){if(!document.getElementById('consentCheck').checked){alert('Vui lòng đồng ý với điều khoản để tiếp tục.');return;}const btn=document.getElementById('submitBtn');const lbl=document.getElementById('submitLabel');btn.disabled=true;lbl.textContent='⏳ Đang gửi...';const d=state.selectedDate;const dateStr=d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();const code='ERP-'+Date.now().toString(36).toUpperCase();state.bookingCode=code;const payload=new URLSearchParams();payload.append(GF_FIELDS.name,state.name);payload.append(GF_FIELDS.company,state.company);payload.append(GF_FIELDS.email,state.email);payload.append(GF_FIELDS.phone,state.phone);payload.append(GF_FIELDS.industry,INDUSTRY_LABELS[state.industry]||state.industry);payload.append(GF_FIELDS.topics,state.topics.map(t=>TOPIC_LABELS[t]||t).join(', '));payload.append(GF_FIELDS.date,dateStr);payload.append(GF_FIELDS.time,state.selectedTime);try{await fetch(GOOGLE_FORM_ACTION,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:payload.toString()});}catch(e){}showSuccess(dateStr,code);}
+function showSuccess(dateStr,code){for(let i=1;i<=4;i++){const p=document.getElementById('step'+i);if(p)p.style.display='none';}document.getElementById('stepSuccess').style.display='';document.getElementById('progressFill').style.width='100%';updateStepIndicator(5);document.getElementById('sDate').textContent=dateStr;document.getElementById('sTime').textContent=state.selectedTime+' ICT';document.getElementById('sEmail').textContent=state.email;document.getElementById('sCode').textContent=code;const d=state.selectedDate;const[h,m]=state.selectedTime.split(':').map(Number);const start=new Date(d);start.setHours(h,m,0);const end=new Date(start);end.setMinutes(end.getMinutes()+30);const fmt=dt=>dt.toISOString().replace(/-|:|\.\d{3}/g,'');const calUrl=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tư+vấn+ERP+BC+-+ERPVietResearch&dates=${fmt(start)}/${fmt(end)}&details=Buổi+tư+vấn+Business+Central+30+phút.+Mã:+${code}&sf=true&output=xml`;document.getElementById('calendarLink').href=calUrl;}
+initCalendar();
+</script>
+</body>
+</html>

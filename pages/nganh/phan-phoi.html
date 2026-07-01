@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Central cho Ngành Phân Phối | ERPVietResearch</title>
+<meta name="description" content="Phân tích module Business Central cho nhà phân phối — Sales Order ATP, Credit Limit, Warehouse Shipment. Case study và lộ trình triển khai.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Microsoft Dynamics 365 — Ngành Phân Phối</div>
+      <h1>ERP cho nhà phân phối <em>không mất đơn hàng</em> giữa kho và đội bán hàng</h1>
+      <p class="lede">Business Central kết nối quản lý kho, công nợ đại lý, và đội sales ngoài thị trường trong một hệ thống — thay vì điều phối đơn hàng qua điện thoại và file Excel rời rạc.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
+        <a class="btn btn-secondary" href="#case-study">Xem case study</a>
+      </div>
+    </div>
+    <div class="diagram">
+      <div class="diagram-title">/ Sơ đồ module — Quy trình phân phối</div>
+      <div class="factory-node"><span class="tag">01 — ĐẶT HÀNG</span>Sales Order &amp; Đại lý / Nhà phân phối cấp dưới</div>
+      <div class="factory-node lvl2"><span class="tag">→ ROUTE</span>Quản lý tuyến bán hàng (DMS)</div>
+      <div class="factory-node"><span class="tag">02 — KHO VẬN</span>Warehouse &amp; Multi-warehouse Fulfillment</div>
+      <div class="factory-node lvl2"><span class="tag">→ LOGISTICS</span>Giao nhận &amp; theo dõi vận chuyển</div>
+      <div class="factory-node"><span class="tag">03 — CÔNG NỢ</span>Customer Credit Limit &amp; Aging Report</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>3 bài toán doanh nghiệp phân phối Việt Nam thường gặp</h2>
+      <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="num">01</span>
+        <h3>Đội sales đặt đơn hàng không thấy tồn kho realtime</h3>
+        <p>Nhân viên thị trường chốt đơn với đại lý nhưng không biết kho còn hàng hay không, dẫn đến hủy đơn hoặc giao trễ.</p>
+        <div class="fix">→ Giải pháp: Sales Order tích hợp Available-to-Promise (ATP)</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">02</span>
+        <h3>Công nợ đại lý vượt hạn mức mà không ai kiểm soát</h3>
+        <p>Không có cảnh báo tự động khi đại lý vượt credit limit, dẫn đến rủi ro nợ xấu tăng dần theo thời gian.</p>
+        <div class="fix">→ Giải pháp: Customer Credit Limit + Aging Report tự động</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">03</span>
+        <h3>Không tối ưu được tuyến giao hàng và chi phí logistics</h3>
+        <p>Lịch giao hàng lập thủ công, không gộp đơn theo tuyến, làm tăng chi phí vận chuyển và thời gian giao.</p>
+        <div class="fix">→ Giải pháp: Route Management + Warehouse Shipment</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Module Business Central dành cho phân phối</h2>
+      <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
+    </div>
+    <table class="module-table">
+      <thead>
+        <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mod-name">Sales Order Management<span class="al">Table 36 – Sales Header</span></td>
+          <td>Xử lý đơn hàng từ đại lý/khách buôn, kiểm tra tồn kho khả dụng (ATP)</td>
+          <td>Nhà phân phối nhiều cấp đại lý</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Warehouse Shipment<span class="al">Table 7320 – Warehouse Shipment Header</span></td>
+          <td>Gộp đơn theo tuyến giao, tối ưu lịch xuất kho</td>
+          <td>Doanh nghiệp có đội xe giao hàng riêng</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Customer Credit Limit<span class="al">Field 7000005 – Credit Limit (LCY)</span></td>
+          <td>Tự động chặn/cảnh báo đơn hàng khi đại lý vượt hạn mức công nợ</td>
+          <td>Doanh nghiệp bán hàng công nợ (gối đầu)</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Item Availability by Location<span class="al">Codeunit 99000889 – Avail. Calc.</span></td>
+          <td>Xem tồn kho khả dụng theo từng kho/chi nhánh trước khi chốt đơn</td>
+          <td>Nhà phân phối có nhiều kho vùng miền</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="case-study">
+  <div class="wrap">
+    <div class="case">
+      <div>
+        <div class="eyebrow eyebrow--light">Case Study</div>
+        <h3>Nhà phân phối FMCG với 120 đại lý tại miền Tây</h3>
+        <p>Triển khai Business Central kết nối đội sales ngoài thị trường với kho trung tâm, tự động kiểm soát công nợ và hạn mức tín dụng từng đại lý trong 5 tháng.</p>
+        <a class="btn btn-outline-light" href="../case-studies/index.html">Xem tất cả case study →</a>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>-50%</b><span>Đơn hàng bị hủy do hết hàng</span></div>
+        <div class="stat"><b>-28%</b><span>Nợ xấu quá hạn</span></div>
+        <div class="stat"><b>5 tháng</b><span>Thời gian triển khai</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Đánh giá mức độ phù hợp của Business Central với hệ thống phân phối của bạn</h2>
+    <p>Tư vấn 30 phút, miễn phí, không ràng buộc.</p>
+    <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn →</a>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+</body>
+</html>

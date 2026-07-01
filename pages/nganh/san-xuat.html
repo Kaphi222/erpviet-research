@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Central cho Ngành Sản Xuất | ERPVietResearch</title>
+<meta name="description" content="Phân tích module Business Central cho doanh nghiệp sản xuất — BOM, MRP, Production Order, Quality Management. Case study và lộ trình triển khai thực tế.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Microsoft Dynamics 365 — Ngành Sản Xuất</div>
+      <h1>ERP cho nhà máy <em>không đoán mò</em> kế hoạch sản xuất</h1>
+      <p class="lede">Business Central giúp doanh nghiệp sản xuất vừa và nhỏ kết nối BOM, MRP, và đơn hàng sản xuất trong một hệ thống — thay vì rời rạc giữa Excel và phần mềm kế toán.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
+        <a class="btn btn-secondary" href="#case-study">Xem case study</a>
+      </div>
+    </div>
+    <div class="diagram">
+      <div class="diagram-title">/ Sơ đồ module — Quy trình sản xuất</div>
+      <div class="factory-node"><span class="tag">01 — HOẠCH ĐỊNH</span>Bill of Materials (BOM) &amp; Routing</div>
+      <div class="factory-node lvl2"><span class="tag">→ MRP</span>Material Requirements Planning</div>
+      <div class="factory-node"><span class="tag">02 — VẬN HÀNH</span>Production Order &amp; Capacity Planning</div>
+      <div class="factory-node lvl2"><span class="tag">→ WMS</span>Warehouse &amp; Inventory Management</div>
+      <div class="factory-node"><span class="tag">03 — KIỂM SOÁT</span>Quality Management &amp; Costing</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>3 bài toán doanh nghiệp sản xuất Việt Nam thường gặp</h2>
+      <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="num">01</span>
+        <h3>Tồn kho ảo, không khớp thực tế</h3>
+        <p>Số liệu tồn kho trên sổ sách lệch với kho thực tế do nhập liệu thủ công, không cập nhật real-time.</p>
+        <div class="fix">→ Giải pháp: Warehouse Management + Bin tracking</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">02</span>
+        <h3>Không biết giá thành thực tế sản phẩm</h3>
+        <p>Chi phí nguyên vật liệu, nhân công, overhead không được phân bổ chính xác theo từng lệnh sản xuất.</p>
+        <div class="fix">→ Giải pháp: Standard/Actual Costing trong Manufacturing</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">03</span>
+        <h3>Lập kế hoạch mua hàng theo cảm tính</h3>
+        <p>Không có công cụ dự báo nhu cầu nguyên vật liệu, dẫn đến tồn kho dư thừa hoặc thiếu hụt.</p>
+        <div class="fix">→ Giải pháp: MRP &amp; Demand Forecasting</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Module Business Central dành cho sản xuất</h2>
+      <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
+    </div>
+    <table class="module-table">
+      <thead>
+        <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mod-name">Production Orders<span class="al">Table 5405 – Production Order</span></td>
+          <td>Quản lý lệnh sản xuất từ Firm Planned → Released → Finished</td>
+          <td>Sản xuất rời rạc, lắp ráp</td>
+        </tr>
+        <tr>
+          <td class="mod-name">MRP<span class="al">Codeunit 99000854 – MRP</span></td>
+          <td>Tính toán nhu cầu nguyên vật liệu tự động theo lead time</td>
+          <td>Doanh nghiệp có nhiều NVL, nhiều cấp BOM</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Capacity Planning<span class="al">Table 99000761 – Work Center</span></td>
+          <td>Lập lịch máy móc, nhân lực theo công suất thực tế</td>
+          <td>Nhà máy có nhiều công đoạn, máy móc giới hạn</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Quality Management<span class="al">AppSource extension</span></td>
+          <td>Kiểm tra chất lượng đầu vào/đầu ra theo tiêu chuẩn</td>
+          <td>Ngành thực phẩm, dược, linh kiện kỹ thuật cao</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="case-study">
+  <div class="wrap">
+    <div class="case">
+      <div>
+        <div class="eyebrow eyebrow--light">Case Study</div>
+        <h3>Nhà máy cơ khí 200 nhân sự tại Bình Dương</h3>
+        <p>Chuyển từ Excel + phần mềm kế toán rời rạc sang Business Central, tích hợp MRP và Production Order trong 4 tháng triển khai.</p>
+        <a class="btn btn-outline-light" href="../case-studies/index.html">Xem tất cả case study →</a>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>-35%</b><span>Thời gian đóng kỳ kế toán</span></div>
+        <div class="stat"><b>-22%</b><span>Tồn kho dư thừa</span></div>
+        <div class="stat"><b>4 tháng</b><span>Thời gian triển khai</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Đánh giá mức độ phù hợp của Business Central với nhà máy của bạn</h2>
+    <p>Tư vấn 30 phút, miễn phí, không ràng buộc.</p>
+    <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn →</a>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+</body>
+</html>

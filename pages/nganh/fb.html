@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Central cho Ngành F&B | ERPVietResearch</title>
+<meta name="description" content="Phân tích module Business Central cho doanh nghiệp F&B — Lot Tracking, FEFO, Recipe Management, truy xuất nguồn gốc ISO 22000.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Microsoft Dynamics 365 — Ngành Thực Phẩm &amp; Đồ Uống</div>
+      <h1>ERP cho doanh nghiệp F&amp;B <em>không lo hết hạn sử dụng</em> giữa kho và sản xuất</h1>
+      <p class="lede">Business Central kiểm soát hạn sử dụng (lot/expiry), truy xuất nguồn gốc, và công thức chế biến trong một hệ thống — thay vì ghi sổ tay và phát hiện hàng hết hạn khi đã quá muộn.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
+        <a class="btn btn-secondary" href="#case-study">Xem case study</a>
+      </div>
+    </div>
+    <div class="diagram">
+      <div class="diagram-title">/ Sơ đồ module — Quy trình F&amp;B</div>
+      <div class="factory-node"><span class="tag">01 — CÔNG THỨC</span>Recipe / Formula Management</div>
+      <div class="factory-node lvl2"><span class="tag">→ YIELD</span>Tính hao hụt &amp; định mức nguyên liệu</div>
+      <div class="factory-node"><span class="tag">02 — TRUY XUẤT</span>Lot Tracking &amp; Expiration Date Management</div>
+      <div class="factory-node lvl2"><span class="tag">→ FEFO</span>Xuất kho theo nguyên tắc First-Expired-First-Out</div>
+      <div class="factory-node"><span class="tag">03 — TUÂN THỦ</span>Food Safety &amp; Quality Compliance</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>3 bài toán doanh nghiệp F&amp;B Việt Nam thường gặp</h2>
+      <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="num">01</span>
+        <h3>Hàng tồn kho hết hạn mà không phát hiện kịp</h3>
+        <p>Quản lý lô/hạn sử dụng bằng sổ tay hoặc Excel, dẫn đến xuất nhầm hàng cũ hoặc phát hiện hết hạn khi đã trễ.</p>
+        <div class="fix">→ Giải pháp: Lot Tracking + FEFO Warehouse Picking</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">02</span>
+        <h3>Không truy xuất được nguồn gốc khi có sự cố</h3>
+        <p>Khi xảy ra khiếu nại chất lượng, không thể nhanh chóng xác định lô nguyên liệu nào liên quan để thu hồi đúng phạm vi.</p>
+        <div class="fix">→ Giải pháp: End-to-end Lot Traceability</div>
+      </div>
+      <div class="pain-card">
+        <span class="num">03</span>
+        <h3>Định mức nguyên liệu và hao hụt không chính xác</h3>
+        <p>Công thức chế biến không được hệ thống hóa, dẫn đến sai lệch giữa nguyên liệu tiêu hao thực tế và kế hoạch.</p>
+        <div class="fix">→ Giải pháp: Recipe Management + Yield Calculation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Module Business Central dành cho F&amp;B</h2>
+      <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
+    </div>
+    <table class="module-table">
+      <thead>
+        <tr><th>Module</th><th>Chức năng chính</th><th>Phù hợp với</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mod-name">Item Tracking (Lot/Expiry)<span class="al">Table 6502 – Item Tracking Code</span></td>
+          <td>Theo dõi từng lô hàng theo ngày sản xuất và hạn sử dụng</td>
+          <td>Thực phẩm tươi sống, đồ uống, dược phẩm</td>
+        </tr>
+        <tr>
+          <td class="mod-name">FEFO Warehouse Picking<span class="al">Codeunit 7312 – Whse.-Source Create Doc.</span></td>
+          <td>Tự động ưu tiên xuất hàng theo lô gần hết hạn trước</td>
+          <td>Doanh nghiệp có vòng quay hàng nhanh</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Recipe / Production BOM<span class="al">Table 99000771 – Production BOM Header</span></td>
+          <td>Quản lý công thức chế biến, định mức nguyên liệu theo mẻ sản xuất</td>
+          <td>Nhà máy chế biến thực phẩm, đồ uống</td>
+        </tr>
+        <tr>
+          <td class="mod-name">Lot Traceability Report<span class="al">Table 6515 – Tracking Specification</span></td>
+          <td>Truy xuất ngược/xuôi toàn bộ chuỗi cung ứng theo lô khi cần thu hồi</td>
+          <td>Doanh nghiệp cần tuân thủ ATTP, ISO 22000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="case-study">
+  <div class="wrap">
+    <div class="case">
+      <div>
+        <div class="eyebrow eyebrow--light">Case Study</div>
+        <h3>Nhà máy chế biến nước giải khát tại Long An</h3>
+        <p>Triển khai Business Central với Lot Tracking và FEFO picking, loại bỏ tình trạng xuất nhầm hàng cận date, đáp ứng audit ISO 22000 trong 4 tháng.</p>
+        <a class="btn btn-outline-light" href="../case-studies/index.html">Xem tất cả case study →</a>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>-60%</b><span>Hàng hủy do hết hạn</span></div>
+        <div class="stat"><b>-45%</b><span>Thời gian truy xuất khi audit</span></div>
+        <div class="stat"><b>4 tháng</b><span>Thời gian triển khai</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Đánh giá mức độ phù hợp của Business Central với doanh nghiệp F&amp;B của bạn</h2>
+    <p>Tư vấn 30 phút, miễn phí, không ràng buộc.</p>
+    <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn →</a>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+</body>
+</html>
