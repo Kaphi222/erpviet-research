@@ -27,6 +27,7 @@
 <div class="wrap">
   <div class="topbar">
     <a href="${base}index.html" class="logo">ERP<span>Việt</span>Research</a>
+    <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">☰</button>
     <nav class="site-nav">
       ${navLink(base + 'index.html', 'Trang chủ')}
       <div class="nav-dropdown">
@@ -85,5 +86,16 @@
 
     const footerEl = document.getElementById('site-footer');
     if (footerEl) footerEl.innerHTML = footer;
+
+    /* Mobile menu toggle */
+    const toggle = headerEl && headerEl.querySelector('.nav-toggle');
+    const nav = headerEl && headerEl.querySelector('.site-nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function () {
+        const open = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.textContent = open ? '✕' : '☰';
+      });
+    }
   });
 })();
