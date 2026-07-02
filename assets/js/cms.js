@@ -19,6 +19,33 @@
     CaseStudies: 'data/case-studies.json',
   };
 
+  // Các cột dạng danh sách: lưu trong Sheet là chuỗi "a | b | c", web dùng mảng
+  const LIST_FIELDS = ['results', 'solutions'];
+
+  /** Chuẩn hóa 1 hàng từ Sheet về đúng shape web cần */
+  function normalizeRow(row) {
+    const r = { ...row };
+    // "TRUE"/"FALSE" → boolean
+    if ('featured' in r) r.featured = r.featured === true || String(r.featured).toUpperCase() === 'TRUE';
+    // "a | b | c" → ['a','b','c']
+    LIST_FIELDS.forEach(f => {
+      if (typeof r[f] === 'string') {
+        r[f] = r[f].split('|').map(s => s.trim()).filter(Boolean);
+      } else if (f in r && !Array.isArray(r[f])) {
+        r[f] = [];
+      }
+    });
+    // Sheets đổi "06/2026" thành Date ISO → format lại MM/YYYY (Sheet ở GMT+7)
+    if (typeof r.date === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(r.date)) {
+      const d = new Date(new Date(r.date).getTime() + 7 * 3600 * 1000);
+      if (!isNaN(d)) r.date = String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + d.getUTCFullYear();
+    }
+    // Ô trống trong Sheet trả về "" → null cho các field URL
+    if (r.detailUrl === '') r.detailUrl = null;
+    if (r.sourceUrl === '') r.sourceUrl = null;
+    return r;
+  }
+
   // ── Public API ───────────────────────────────────────────────────────────────
 
   /**
@@ -36,12 +63,7 @@
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
-            // Normalize booleans stored as strings "TRUE"/"FALSE"
-            return data.map(row => {
-              const r = { ...row };
-              if ('featured' in r) r.featured = r.featured === true || String(r.featured).toUpperCase() === 'TRUE';
-              return r;
-            });
+            return data.map(normalizeRow);
           }
         }
       } catch (_) {
@@ -67,11 +89,19 @@
    */
   window.pushCMS = async function pushCMS(sheetName, data) {
     if (!CMS_SCRIPT_URL) throw new Error('CMS_SCRIPT_URL not set');
+    // Mảng → chuỗi "a | b | c" để ghi được vào ô Sheet (đọc lại sẽ tự split)
+    const flat = data.map(row => {
+      const r = { ...row };
+      Object.keys(r).forEach(k => {
+        if (Array.isArray(r[k])) r[k] = r[k].join(' | ');
+      });
+      return r;
+    });
     // Content-Type text/plain để tránh CORS preflight — Apps Script không trả lời OPTIONS
     const res = await fetch(CMS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ sheet: sheetName, data }),
+      body: JSON.stringify({ sheet: sheetName, data: flat }),
     });
     return res.json();
   };
