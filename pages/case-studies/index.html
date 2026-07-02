@@ -92,6 +92,11 @@
     <!-- Rendered by JS -->
   </div>
 
+  <div id="load-more-wrap" style="text-align:center; padding:32px 0 8px; display:none;">
+    <button class="btn btn-secondary" id="load-more-btn" onclick="loadMoreCases()">Xem thêm case study ↓</button>
+    <div id="load-more-count" style="margin-top:10px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--steel);"></div>
+  </div>
+
 </div>
 
 <!-- CTA STRIP -->
@@ -106,48 +111,73 @@
 <div id="site-footer"></div>
 
 <script>
+/* ── State: danh sách case + bộ lọc + phân trang ── */
+const PAGE_SIZE = 6;
+let allCases = [];          // toàn bộ case không featured
+let currentFilter = 'all';
+let shownCount = PAGE_SIZE;
+
 function filterCards(industry, btn){
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
+  currentFilter = industry;
+  shownCount = PAGE_SIZE; // đổi bộ lọc thì quay về trang đầu
   const spotlight = document.querySelector('.spotlight');
-  const cards = document.querySelectorAll('.card');
-  if(industry === 'all'){
-    spotlight.style.display = '';
-    cards.forEach(c => c.style.display = '');
-    return;
-  }
-  spotlight.style.display = spotlight.dataset.industry === industry ? '' : 'none';
-  cards.forEach(c => {
-    c.style.display = c.dataset.industry === industry ? '' : 'none';
-  });
+  spotlight.style.display = (industry === 'all' || spotlight.dataset.industry === industry) ? '' : 'none';
+  renderCases();
 }
 
-/* ── Render case cards từ CMS (Google Sheets → fallback JSON) ── */
-(async function () {
+function loadMoreCases(){
+  shownCount += PAGE_SIZE;
+  renderCases();
+}
+
+function renderCases(){
   const base = window.SITE_BASE || '../../';
+  const grid = document.getElementById('cases-grid');
+  const wrap = document.getElementById('load-more-wrap');
+  const countEl = document.getElementById('load-more-count');
+
+  const filtered = currentFilter === 'all'
+    ? allCases
+    : allCases.filter(c => c.industry === currentFilter);
+  const visible = filtered.slice(0, shownCount);
+
+  grid.innerHTML = visible.map(c => `
+    <div class="card" data-industry="${c.industry}">
+      <div class="card-tag ${c.industry}">${c.industryLabel}</div>
+      <div class="card-company">${c.company}</div>
+      <h3>${c.title}</h3>
+      <p>${c.summary}</p>
+      <div class="card-results">
+        ${(c.results || []).map(r => `<span class="result-pill">${r}</span>`).join('')}
+      </div>
+      <div class="solution-tags">
+        ${(c.solutions || []).map(s => `<span class="sol-tag">${s}</span>`).join('')}
+      </div>
+      <div class="card-meta">
+        <span class="card-date">${c.date || ''}</span>
+        <a class="card-link" href="${c.detailUrl ? base + c.detailUrl : (c.sourceUrl || '#')}" ${c.sourceUrl && !c.detailUrl ? 'target="_blank" rel="noopener"' : ''}>${c.detailUrl ? 'Xem chi tiết' : 'Xem nguồn gốc'}</a>
+      </div>
+    </div>
+  `).join('');
+
+  // Nút "Xem thêm" chỉ hiện khi còn case chưa hiển thị
+  const remaining = filtered.length - visible.length;
+  wrap.style.display = remaining > 0 ? '' : 'none';
+  if (remaining > 0) {
+    countEl.textContent = `Đang hiện ${visible.length}/${filtered.length} case`;
+  }
+}
+
+/* ── Load từ CMS (Google Sheets → fallback JSON) ── */
+(async function () {
   try {
     const cases = await fetchCMS('CaseStudies');
-    const grid = document.getElementById('cases-grid');
-    if (!grid || !cases.length) return;
+    if (!cases.length) return;
     // Case featured đã hiển thị ở spotlight phía trên → grid hiện phần còn lại
-    grid.innerHTML = cases.filter(c => !c.featured).map(c => `
-      <div class="card" data-industry="${c.industry}">
-        <div class="card-tag ${c.industry}">${c.industryLabel}</div>
-        <div class="card-company">${c.company}</div>
-        <h3>${c.title}</h3>
-        <p>${c.summary}</p>
-        <div class="card-results">
-          ${(c.results || []).map(r => `<span class="result-pill">${r}</span>`).join('')}
-        </div>
-        <div class="solution-tags">
-          ${(c.solutions || []).map(s => `<span class="sol-tag">${s}</span>`).join('')}
-        </div>
-        <div class="card-meta">
-          <span class="card-date">${c.date || ''}</span>
-          <a class="card-link" href="${c.detailUrl ? base + c.detailUrl : (c.sourceUrl || '#')}" ${c.sourceUrl && !c.detailUrl ? 'target="_blank" rel="noopener"' : ''}>${c.detailUrl ? 'Xem chi tiết' : 'Xem nguồn gốc'}</a>
-        </div>
-      </div>
-    `).join('');
+    allCases = cases.filter(c => !c.featured);
+    renderCases();
   } catch (e) {
     console.warn('Could not load case studies:', e);
   }
