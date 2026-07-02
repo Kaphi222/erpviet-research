@@ -67,9 +67,10 @@
    */
   window.pushCMS = async function pushCMS(sheetName, data) {
     if (!CMS_SCRIPT_URL) throw new Error('CMS_SCRIPT_URL not set');
+    // Content-Type text/plain để tránh CORS preflight — Apps Script không trả lời OPTIONS
     const res = await fetch(CMS_SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ sheet: sheetName, data }),
     });
     return res.json();

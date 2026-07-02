@@ -259,10 +259,10 @@ tr:hover td{background:#fafaf8;}
       <!-- APPS SCRIPT SETUP -->
       <div class="guide-card" style="margin-bottom:20px;">
         <h3>⚙️ Cấu hình Apps Script (cần làm 1 lần)</h3>
-        <p style="font-size:13px;color:var(--steel);margin-bottom:10px;">Bản đầy đủ (booking + CMS + restore + backup + tự tạo tab) nằm trong file <code>apps-script/Code.gs</code> của repo. Mở Apps Script → thay toàn bộ code → chạy <code>setupSheets()</code> 1 lần → Deploy lại (New deployment). Code rút gọn bên dưới chỉ để tham khảo nhanh.</p>
+        <p style="font-size:13px;color:var(--steel);margin-bottom:10px;"><strong>⚠️ Dùng file <code>apps-script/Code.gs</code> trong repo — KHÔNG copy đoạn rút gọn bên dưới</strong> (thiếu chức năng backup và setupSheets). Các bước: mở Google Sheet → Extensions → Apps Script → xóa hết, dán toàn bộ <code>Code.gs</code> → chạy <code>setupSheets()</code> 1 lần → Deploy → Manage deployments → Edit (✏️) → Version: New version → Deploy. Dùng "Manage deployments" thì URL giữ nguyên, không phải sửa code web.</p>
         <details>
-          <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--teal);">Xem code Apps Script cần cập nhật →</summary>
-          <pre class="json-view" style="margin-top:10px;user-select:all;font-size:11px;">const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID'; // thay bằng ID Sheet của bạn
+          <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--teal);">Xem code tham khảo nhanh (không đầy đủ) →</summary>
+          <pre class="json-view" style="margin-top:10px;user-select:all;font-size:11px;">const SHEET_ID = '1tVbEjOf9MwvsaEauMPRklf-vt4s-K7JaR9VL-JVKYgA'; // ID Sheet của bạn (đã điền sẵn)
 
 function doGet(e) {
   const sheetName = e.parameter.sheet;
