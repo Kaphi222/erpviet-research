@@ -76,6 +76,16 @@
   };
 
   /**
+   * Trigger a server-side backup: Apps Script copies each CMS tab
+   * into a hidden Backup_<name>_<timestamp> sheet (keeps last 10).
+   */
+  window.backupCMS = async function backupCMS() {
+    if (!CMS_SCRIPT_URL) throw new Error('CMS_SCRIPT_URL not set');
+    const res = await fetch(`${CMS_SCRIPT_URL}?action=backup&cb=${Date.now()}`);
+    return res.json();
+  };
+
+  /**
    * Download data as a JSON file (backup).
    * @param {Array}  data
    * @param {string} filename  e.g. 'industries.json'

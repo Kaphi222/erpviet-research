@@ -226,6 +226,14 @@ tr:hover td{background:#fafaf8;}
           </div>
         </div>
 
+        <!-- SERVER-SIDE BACKUP -->
+        <div class="guide-card" style="grid-column:1/-1;">
+          <h3>🛡️ Backup ngay trong Google Sheets</h3>
+          <p style="font-size:13px;color:var(--steel);margin-bottom:14px;">Sao chép tab <strong>Nganh</strong> và <strong>CaseStudies</strong> thành tab ẩn <code>Backup_&lt;tên&gt;_&lt;ngày giờ&gt;</code> ngay trong Sheet (giữ 10 bản gần nhất). Restore từ JSON cũng tự động backup trước khi ghi đè.</p>
+          <button class="btn btn-primary btn-sm" onclick="backupSheetsNow()">🛡️ Backup ngay</button>
+          <div id="backup-status" style="margin-top:12px;font-size:12px;color:var(--steel);font-family:'JetBrains Mono',monospace;"></div>
+        </div>
+
         <!-- RESTORE FROM JSON -->
         <div class="guide-card" style="grid-column:1/-1;">
           <h3>↑ Restore từ JSON → Google Sheets</h3>
@@ -251,7 +259,7 @@ tr:hover td{background:#fafaf8;}
       <!-- APPS SCRIPT SETUP -->
       <div class="guide-card" style="margin-bottom:20px;">
         <h3>⚙️ Cấu hình Apps Script (cần làm 1 lần)</h3>
-        <p style="font-size:13px;color:var(--steel);margin-bottom:10px;">Cập nhật Apps Script hiện có để hỗ trợ CMS (đọc tab theo tên + restore). Mở Apps Script → thay toàn bộ bằng code bên dưới → Deploy lại (New deployment).</p>
+        <p style="font-size:13px;color:var(--steel);margin-bottom:10px;">Bản đầy đủ (booking + CMS + restore + backup + tự tạo tab) nằm trong file <code>apps-script/Code.gs</code> của repo. Mở Apps Script → thay toàn bộ code → chạy <code>setupSheets()</code> 1 lần → Deploy lại (New deployment). Code rút gọn bên dưới chỉ để tham khảo nhanh.</p>
         <details>
           <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--teal);">Xem code Apps Script cần cập nhật →</summary>
           <pre class="json-view" style="margin-top:10px;user-select:all;font-size:11px;">const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID'; // thay bằng ID Sheet của bạn
@@ -469,6 +477,26 @@ async function exportFromSheets(sheetName, filename) {
     status.textContent = `✓ Đã export ${data.length} hàng → ${filename}`;
   } catch (e) {
     status.textContent = '✗ Lỗi: ' + e.message;
+  }
+}
+
+async function backupSheetsNow() {
+  const status = document.getElementById('backup-status');
+  status.style.color = 'var(--steel)';
+  status.textContent = 'Đang backup...';
+  try {
+    const result = await backupCMS();
+    if (result && result.status === 'ok') {
+      status.style.color = 'var(--success)';
+      status.textContent = result.backups && result.backups.length
+        ? '✓ Đã tạo: ' + result.backups.join(', ')
+        : '✓ Backup xong (bản cùng phút đã tồn tại nên không tạo thêm).';
+    } else {
+      throw new Error(result?.error || 'Không rõ lỗi');
+    }
+  } catch (e) {
+    status.style.color = 'var(--error)';
+    status.textContent = '✗ Lỗi: ' + e.message + ' — kiểm tra Apps Script đã cập nhật bản mới chưa.';
   }
 }
 
