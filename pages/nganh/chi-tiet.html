@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ngành nghề | ERPVietResearch</title>
+<meta name="description" content="Phân tích module Microsoft Dynamics 365 Business Central theo ngành — bài toán thực tế, module phù hợp và case study.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<!-- Trang template: nội dung load theo ?id=<ma-nganh> từ Google Sheets CMS -->
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+<script src="../../assets/js/cms.js"></script>
+<script src="../../assets/js/industry-render.js"></script>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow" id="ind-eyebrow">Microsoft Dynamics 365</div>
+      <h1 id="ind-hero-h1">Đang tải nội dung ngành...</h1>
+      <p class="lede" id="ind-hero-lede"></p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn miễn phí →</a>
+        <a class="btn btn-secondary" href="#case-study">Xem case study</a>
+      </div>
+    </div>
+    <div class="diagram">
+      <div class="diagram-title">/ Sơ đồ module chính</div>
+      <div id="ind-diagram-nodes"></div>
+    </div>
+  </div>
+</section>
+
+<div class="ind-stat-bar" id="ind-stat-bar"></div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>3 bài toán doanh nghiệp Việt Nam thường gặp</h2>
+      <p>Và module nào trong Business Central giải quyết trực tiếp.</p>
+    </div>
+    <div class="pain-grid" id="ind-pain-grid"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Module Business Central phù hợp</h2>
+      <p>Tên module và đối tượng AL liên quan (cho team triển khai).</p>
+    </div>
+    <table class="module-table" id="ind-module-table"></table>
+  </div>
+</section>
+
+<section class="section" id="case-study">
+  <div class="wrap">
+    <div id="ind-case" class="case"></div>
+  </div>
+</section>
+
+<div class="related-section">
+  <div class="wrap">
+    <div class="related-section-label">Xem thêm ngành nghề khác</div>
+    <div class="related-grid" id="ind-related"></div>
+  </div>
+</div>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Đánh giá mức độ phù hợp của Business Central với doanh nghiệp bạn</h2>
+    <p>Tư vấn 30 phút, miễn phí, không ràng buộc.</p>
+    <a class="btn btn-primary" href="../dat-lich-tu-van.html">Đặt lịch tư vấn →</a>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script>
+// Bấm chip sang ngành khác chỉ đổi hash → phải reload để render lại
+window.addEventListener('hashchange', function () { location.reload(); });
+</script>
+
+</body>
+</html>

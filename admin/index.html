@@ -234,6 +234,37 @@ tr:hover td{background:#fafaf8;}
           <div id="backup-status" style="margin-top:12px;font-size:12px;color:var(--steel);font-family:'JetBrains Mono',monospace;"></div>
         </div>
 
+        <!-- CREATE NEW INDUSTRY -->
+        <div class="guide-card" style="grid-column:1/-1;border-left:3px solid var(--teal);">
+          <h3>➕ Tạo ngành mới</h3>
+          <p style="font-size:13px;color:var(--steel);margin-bottom:14px;">Tạo ngành mới trong Google Sheet với nội dung khung sẵn. Sau khi tạo: vào Sheet tab <strong>Nganh</strong> điền nội dung chi tiết (hero, số liệu, pain points, modules...) — web tự cập nhật. Ngành mới tự xuất hiện ở trang chủ, menu, footer và bộ lọc case study.</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
+            <div class="field">
+              <label>Mã ngành (id) *</label>
+              <input type="text" id="ni-id" placeholder="vd: xay-dung" style="font-family:'JetBrains Mono',monospace;">
+              <span class="hint">Chữ thường, số, gạch ngang. Không đổi được sau khi có case study.</span>
+            </div>
+            <div class="field">
+              <label>Tên ngành (tiếng Việt) *</label>
+              <input type="text" id="ni-label" placeholder="vd: Xây Dựng">
+            </div>
+            <div class="field">
+              <label>Tên tiếng Anh</label>
+              <input type="text" id="ni-labelEn" placeholder="vd: Construction">
+            </div>
+            <div class="field">
+              <label>Màu đại diện</label>
+              <input type="color" id="ni-color" value="#5B7C4A" style="height:38px;padding:3px;cursor:pointer;">
+            </div>
+            <div class="field" style="grid-column:span 2;">
+              <label>Tagline (hiện trên thẻ trang chủ) *</label>
+              <input type="text" id="ni-tagline" placeholder="vd: Kiểm soát chi phí và tiến độ từng công trình">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" id="ni-btn" onclick="createIndustry()">➕ Tạo ngành</button>
+          <div id="ni-status" style="margin-top:12px;font-size:12px;font-family:'JetBrains Mono',monospace;"></div>
+        </div>
+
         <!-- RESTORE FROM JSON -->
         <div class="guide-card" style="grid-column:1/-1;">
           <h3>↑ Restore từ JSON → Google Sheets</h3>
@@ -478,6 +509,69 @@ async function exportFromSheets(sheetName, filename) {
   } catch (e) {
     status.textContent = '✗ Lỗi: ' + e.message;
   }
+}
+
+async function createIndustry() {
+  const status = document.getElementById('ni-status');
+  const btn = document.getElementById('ni-btn');
+  const id = document.getElementById('ni-id').value.trim().toLowerCase();
+  const label = document.getElementById('ni-label').value.trim();
+  const labelEn = document.getElementById('ni-labelEn').value.trim();
+  const color = document.getElementById('ni-color').value;
+  const tagline = document.getElementById('ni-tagline').value.trim();
+
+  status.style.color = 'var(--error)';
+  if (!id || !label || !tagline) { status.textContent = '✗ Cần điền: mã ngành, tên ngành, tagline.'; return; }
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id)) { status.textContent = '✗ Mã ngành chỉ gồm chữ thường/số/gạch ngang, vd: xay-dung'; return; }
+
+  btn.disabled = true;
+  status.style.color = 'var(--steel)';
+  status.textContent = 'Đang kiểm tra dữ liệu hiện tại...';
+
+  try {
+    // Lấy bản mới nhất từ Sheet để không ghi đè mất dữ liệu ai đó vừa sửa
+    const industries = await fetchCMS('Nganh', { fresh: true });
+    if (industries.some(r => r.id === id)) {
+      status.style.color = 'var(--error)';
+      status.textContent = `✗ Mã ngành "${id}" đã tồn tại trong Sheet.`;
+      btn.disabled = false;
+      return;
+    }
+
+    // Hàng mới: đủ cột theo schema, nội dung khung sẵn để dễ điền
+    const newRow = {
+      id, label, labelEn: labelEn || label, color, tagline,
+      slug: 'pages/nganh/chi-tiet.html?id=' + id + '#' + id,
+      description: 'Business Central giúp doanh nghiệp ngành ' + label + ' ... (điền mô tả hero tại đây)',
+      heroH1: 'ERP cho ngành ' + label + ' <em>(điền điểm nhấn)</em>',
+      stat1_so: '--%', stat1_mo: '(điền chỉ số 1)',
+      stat2_so: '--%', stat2_mo: '(điền chỉ số 2)',
+      stat3_so: '- tháng', stat3_mo: 'Thời gian triển khai trung bình',
+      pain1_tieu_de: '(Bài toán 1)', pain1_noi_dung: '(Mô tả bài toán 1)', pain1_giai_phap: '(Module giải quyết)',
+      pain2_tieu_de: '(Bài toán 2)', pain2_noi_dung: '(Mô tả bài toán 2)', pain2_giai_phap: '(Module giải quyết)',
+      pain3_tieu_de: '(Bài toán 3)', pain3_noi_dung: '(Mô tả bài toán 3)', pain3_giai_phap: '(Module giải quyết)',
+      mod1_ten: '(Module 1)', mod1_al: '', mod1_chuc_nang: '(Chức năng chính)', mod1_phu_hop: '(Phù hợp với)',
+      mod2_ten: '', mod2_al: '', mod2_chuc_nang: '', mod2_phu_hop: '',
+      mod3_ten: '', mod3_al: '', mod3_chuc_nang: '', mod3_phu_hop: '',
+      mod4_ten: '', mod4_al: '', mod4_chuc_nang: '', mod4_phu_hop: '',
+      case_ten_cong_ty: '(Tên công ty case study)', case_noi_dung: '(Tóm tắt case study)',
+      case_tg_trien_khai: '- tháng', caseStatLabel: '(Chỉ số nổi bật)', caseStat: '--%'
+    };
+
+    status.textContent = 'Đang ghi lên Google Sheet (tự backup trước)...';
+    const result = await pushCMS('Nganh', industries.concat([newRow]));
+    if (!result || result.status !== 'ok') throw new Error(result?.error || 'Không rõ lỗi');
+
+    status.style.color = 'var(--success)';
+    status.innerHTML = `✓ Đã tạo ngành "${label}". `
+      + `<a href="../pages/nganh/chi-tiet.html?id=${id}#${id}" target="_blank" style="color:var(--teal);text-decoration:underline;">Xem trang ngành →</a> `
+      + `— giờ vào Google Sheet tab Nganh (hàng cuối) điền nội dung chi tiết.`;
+    ['ni-id','ni-label','ni-labelEn','ni-tagline'].forEach(i => document.getElementById(i).value = '');
+  } catch (e) {
+    status.style.color = 'var(--error)';
+    status.textContent = '✗ Lỗi: ' + e.message;
+  }
+  btn.disabled = false;
 }
 
 async function backupSheetsNow() {

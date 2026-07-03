@@ -97,5 +97,23 @@
         toggle.textContent = open ? '✕' : '☰';
       });
     }
+
+    /* Danh sách ngành động từ CMS: cập nhật dropdown + footer.
+       Nếu CMS lỗi thì giữ nguyên danh sách 5 ngành hardcode ở trên. */
+    if (typeof window.fetchCMS === 'function') {
+      window.fetchCMS('Nganh').then(function (industries) {
+        if (!industries || !industries.length) return;
+        const links = industries.map(function (r) {
+          const href = /chi-tiet\.html/.test(r.slug || '')
+            ? base + 'pages/nganh/chi-tiet.html?id=' + encodeURIComponent(r.id) + '#' + encodeURIComponent(r.id)
+            : base + (r.slug || '');
+          return '<a href="' + href + '">' + r.label + '</a>';
+        }).join('');
+        const dropdown = headerEl && headerEl.querySelector('.dropdown-menu');
+        if (dropdown) dropdown.innerHTML = links;
+        const footerCol = footerEl && footerEl.querySelector('.footer-col');
+        if (footerCol) footerCol.innerHTML = '<h4>Ngành nghề</h4>' + links;
+      }).catch(function () {});
+    }
   });
 })();

@@ -153,7 +153,7 @@
       const grid = document.getElementById('industry-grid');
       if (!grid) return;
       grid.innerHTML = industries.map(ind => `
-        <a href="${base}${ind.slug}" class="industry-card">
+        <a href="${base}${ind.slug || ('pages/nganh/chi-tiet.html?id=' + ind.id + '#' + ind.id)}" class="industry-card">
           <div class="industry-dot" style="background:${ind.color};"></div>
           <div class="ind-label-en">${ind.labelEn}</div>
           <h3>${ind.label}</h3>

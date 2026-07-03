@@ -5,16 +5,36 @@
  * Requires cms.js to be loaded first.
  */
 (async function () {
+  // id lấy từ meta (5 trang ngành tĩnh) hoặc từ URL của trang template chi-tiet.html
+  // Hỗ trợ cả ?id=xay-dung lẫn #xay-dung (một số server local bỏ mất query string)
   const meta = document.querySelector('meta[name="industry-id"]');
-  if (!meta) return;
-  const industryId = meta.content;
+  const queryId = new URLSearchParams(location.search).get('id');
+  const hashId = decodeURIComponent(location.hash.replace(/^#(id=)?/, '')) || null;
+  const urlId = queryId || hashId;
+  const industryId = (meta && meta.content) || urlId;
+  if (!industryId) return;
+  const isTemplate = !meta && !!urlId;
 
-  let ind;
+  let ind, all = [];
   try {
-    const all = await fetchCMS('Nganh');
+    all = await fetchCMS('Nganh');
     ind = all.find(r => r.id === industryId);
   } catch (_) {}
-  if (!ind) return;
+
+  // Cache có thể trả dữ liệu tức thì TRƯỚC khi DOM parse xong → phải chờ DOM
+  if (document.readyState === 'loading') {
+    await new Promise(res => document.addEventListener('DOMContentLoaded', res));
+  }
+  if (!ind) {
+    // Template mà không tìm thấy ngành → báo rõ thay vì trang trắng
+    if (isTemplate) {
+      const h = document.getElementById('ind-hero-h1');
+      if (h) h.textContent = 'Không tìm thấy ngành "' + industryId + '"';
+      const l = document.getElementById('ind-hero-lede');
+      if (l) l.textContent = 'Kiểm tra cột id trong Google Sheet tab Nganh, hoặc chờ vài phút nếu vừa tạo.';
+    }
+    return;
+  }
 
   // ── Helper ───────────────────────────────────────────────────────────────────
   function set(id, html, useInner = true) {
@@ -22,6 +42,34 @@
     if (!el) return;
     if (useInner) el.innerHTML = html;
     else el.textContent = html;
+  }
+
+  // ── Trang template: điền title, eyebrow, diagram, related chips ─────────────
+  if (isTemplate) {
+    document.title = 'Business Central cho Ngành ' + (ind.label || '') + ' | ERPVietResearch';
+    const eyebrow = document.getElementById('ind-eyebrow');
+    if (eyebrow) eyebrow.textContent = 'Microsoft Dynamics 365 — Ngành ' + (ind.label || '');
+
+    // Diagram: node từ tên module
+    const diagramNodes = document.getElementById('ind-diagram-nodes');
+    if (diagramNodes) {
+      diagramNodes.innerHTML = [1, 2, 3, 4]
+        .map(n => ind['mod' + n + '_ten'])
+        .filter(Boolean)
+        .map((ten, i) => `<div class="factory-node${i % 2 === 1 ? ' lvl2' : ''}"><span class="tag">MODULE 0${i + 1}</span>${ten}</div>`)
+        .join('');
+    }
+
+    // Related chips: các ngành khác
+    const related = document.getElementById('ind-related');
+    if (related) {
+      related.innerHTML = all.filter(r => r.id !== industryId).map(r => {
+        const href = /chi-tiet\.html/.test(r.slug || '')
+          ? 'chi-tiet.html?id=' + encodeURIComponent(r.id) + '#' + encodeURIComponent(r.id)
+          : (r.slug || '').replace('pages/nganh/', '');
+        return `<a href="${href}" class="related-chip"><span class="dot" style="background:${r.color || '#4A7C7C'}"></span>${r.label}</a>`;
+      }).join('');
+    }
   }
 
   // ── Hero ─────────────────────────────────────────────────────────────────────
@@ -80,9 +128,11 @@
     `;
   }
 
-  // ── Inline case study ────────────────────────────────────────────────────────
-  set('ind-case', `
-    <div class="case">
+  // ── Inline case study (phần tử #ind-case đã có class="case") ────────────────
+  const caseEl = document.getElementById('ind-case');
+  if (caseEl) {
+    caseEl.classList.add('case');
+    caseEl.innerHTML = `
       <div>
         <div class="eyebrow eyebrow--light">Case Study</div>
         <h3>${ind.case_ten_cong_ty || ''}</h3>
@@ -94,8 +144,8 @@
         <div class="stat"><b>${ind.caseStat || ''}</b><span>${ind.caseStatLabel || ''}</span></div>
         <div class="stat"><b>${ind.case_tg_trien_khai || ''}</b><span>Thời gian triển khai</span></div>
       </div>
-    </div>
-  `);
+    `;
+  }
 
   // ── CSS accent color ─────────────────────────────────────────────────────────
   if (ind.color) {

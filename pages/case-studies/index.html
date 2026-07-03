@@ -178,6 +178,22 @@ function renderCases(){
     // Case featured đã hiển thị ở spotlight phía trên → grid hiện phần còn lại
     allCases = cases.filter(c => !c.featured);
     renderCases();
+
+    // Chip lọc cho ngành MỚI (ngoài 5 ngành có sẵn) — label lấy từ tab Nganh
+    const knownCodes = ['all', 'manufacturing', 'distribution', 'fb', 'retail', 'service'];
+    const extraCodes = [...new Set(allCases.map(c => c.industry))].filter(code => code && !knownCodes.includes(code));
+    if (extraCodes.length) {
+      const industries = await fetchCMS('Nganh');
+      const bar = document.querySelector('.filterbar');
+      extraCodes.forEach(code => {
+        const ind = industries.find(r => r.id === code);
+        const btn = document.createElement('button');
+        btn.className = 'chip';
+        btn.textContent = ind ? ind.label : code;
+        btn.onclick = function () { filterCards(code, btn); };
+        bar.appendChild(btn);
+      });
+    }
   } catch (e) {
     console.warn('Could not load case studies:', e);
   }
