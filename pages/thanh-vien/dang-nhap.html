@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng nhập thành viên | ERPVietResearch</title>
+<meta name="description" content="Đăng nhập dành cho hội viên, VIP và đối tác của ERPVietResearch.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+.login-wrap{max-width:380px;margin:80px auto;padding:36px 32px;border:2px solid var(--line);border-radius:8px;background:var(--white);}
+.login-wrap h1{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:6px;}
+.login-wrap p{font-size:13px;color:var(--steel);margin-bottom:24px;}
+.login-wrap .field{margin-bottom:14px;display:flex;flex-direction:column;gap:5px;}
+.login-wrap label{font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif;}
+.login-wrap input{border:2px solid var(--line-strong);padding:10px 12px;border-radius:6px;font-size:14px;font-family:'Inter',sans-serif;}
+.login-wrap input:focus{outline:none;border-color:var(--teal);}
+.login-err{color:#C0392B;font-size:12.5px;margin-top:10px;display:none;}
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+<script src="../../assets/js/cms.js"></script>
+<script src="../../assets/js/auth.js"></script>
+
+<div class="login-wrap">
+  <h1>Đăng nhập thành viên</h1>
+  <p>Dành cho hội viên, VIP và đối tác đã được cấp tài khoản.</p>
+  <div class="field">
+    <label>Username</label>
+    <input type="text" id="li-username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+  </div>
+  <div class="field">
+    <label>Mật khẩu</label>
+    <input type="password" id="li-password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+  </div>
+  <button class="btn btn-primary" style="width:100%;" onclick="doLogin()" id="li-btn">Đăng nhập →</button>
+  <div class="login-err" id="li-err">Sai tài khoản hoặc mật khẩu.</div>
+</div>
+
+<div id="site-footer"></div>
+
+<script>
+async function doLogin() {
+  const username = document.getElementById('li-username').value.trim();
+  const password = document.getElementById('li-password').value;
+  const err = document.getElementById('li-err');
+  const btn = document.getElementById('li-btn');
+  err.style.display = 'none';
+  if (!username || !password) { err.textContent = 'Vui lòng nhập đầy đủ username và mật khẩu.'; err.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = 'Đang kiểm tra...';
+  const result = await login(username, password);
+  btn.disabled = false; btn.textContent = 'Đăng nhập →';
+  if (result.status === 'ok') {
+    location.href = (window.SITE_BASE || '../../') + 'pages/thanh-vien/index.html';
+  } else {
+    err.textContent = result.error || 'Sai tài khoản hoặc mật khẩu.';
+    err.style.display = 'block';
+  }
+}
+</script>
+
+</body>
+</html>

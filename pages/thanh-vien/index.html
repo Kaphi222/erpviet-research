@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Khu vực thành viên | ERPVietResearch</title>
+<meta name="description" content="Khu vực dành riêng cho hội viên, VIP và đối tác của ERPVietResearch.">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+.member-wrap{max-width:560px;margin:80px auto;padding:36px 32px;border:2px solid var(--line);border-radius:8px;background:var(--white);text-align:center;}
+.member-wrap h1{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:16px;}
+.member-info{text-align:left;background:var(--paper);border-radius:6px;padding:20px 24px;margin:20px 0;}
+.member-info .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.member-info .row:last-child{border-bottom:none;}
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="../../assets/js/nav.js"></script>
+<script src="../../assets/js/cms.js"></script>
+<script src="../../assets/js/auth.js"></script>
+
+<div class="member-wrap" id="member-content" style="display:none;">
+  <h1>Xin chào, <span id="mv-name">—</span> 👋</h1>
+  <div class="member-info">
+    <div class="row"><span>Vai trò</span><strong id="mv-role">—</strong></div>
+    <div class="row"><span>Gói</span><strong id="mv-package">—</strong></div>
+    <div class="row"><span>Email</span><strong id="mv-email">—</strong></div>
+  </div>
+  <p style="font-size:13px;color:var(--steel);margin-bottom:20px;">Các tính năng dành riêng cho hội viên/đối tác sẽ được bổ sung ở đây trong thời gian tới.</p>
+  <button class="btn btn-secondary" onclick="doLogout()">Đăng xuất</button>
+</div>
+<div id="member-loading" style="text-align:center;padding:80px 20px;color:var(--steel);">Đang kiểm tra phiên đăng nhập...</div>
+
+<div id="site-footer"></div>
+
+<script>
+(async function () {
+  const session = await getSession();
+  if (!session.valid) {
+    location.href = (window.SITE_BASE || '../../') + 'pages/thanh-vien/dang-nhap.html';
+    return;
+  }
+  document.getElementById('member-loading').style.display = 'none';
+  document.getElementById('member-content').style.display = 'block';
+  document.getElementById('mv-name').textContent = session.user.name || session.user.email || 'Thành viên';
+  document.getElementById('mv-role').textContent = session.user.role || '—';
+  document.getElementById('mv-package').textContent = session.user.package || '—';
+  document.getElementById('mv-email').textContent = session.user.email || '—';
+})();
+
+async function doLogout() {
+  await logout();
+  location.href = (window.SITE_BASE || '../../') + 'pages/thanh-vien/dang-nhap.html';
+}
+</script>
+
+</body>
+</html>

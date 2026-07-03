@@ -7,18 +7,33 @@
  *   3. CMS restore (POST {sheet, data})             → ghi đè tab từ file JSON
  *   4. Backup (GET ?action=backup)                  → sao chép tab CMS thành tab Backup_<ngày giờ>
  *   5. setupSheets() — chạy tay 1 lần               → tự tạo tab Nganh + CaseStudies với headers
+ *   6. Users: đăng nhập/phiên (GET ?action=login|verifySession|logout)
+ *      + quản lý user cho Admin (cần ?secret=... khớp ADMIN_SECRET):
+ *      GET ?action=adminListUsers, POST {action:'adminSaveUser'|'adminDeleteUser', secret, ...}
+ *   7. setupUsersSheet() — chạy tay 1 lần            → tự tạo tab Users với headers
  *
  * CÁCH DÙNG:
  *   - Thay SHEET_ID bên dưới bằng ID Google Sheet của bạn
- *   - Chạy hàm setupSheets() 1 lần (chọn hàm → Run) để tạo tab
+ *   - Chạy hàm setupSheets() và setupUsersSheet() 1 lần (chọn hàm → Run) để tạo tab
+ *   - Set ADMIN_SECRET: Project Settings → Script Properties → thêm key ADMIN_SECRET,
+ *     giá trị là 1 chuỗi ngẫu nhiên dài (dùng làm mật khẩu bảo vệ API quản lý Users)
  *   - Deploy: Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone
- *   - Copy URL /exec mới → dán vào assets/js/cms.js và pages/dat-lich-tu-van.html
+ *   - Copy URL /exec mới → dán vào assets/js/cms.js, assets/js/auth.js và pages/dat-lich-tu-van.html
  */
 
 const SHEET_ID = '1tVbEjOf9MwvsaEauMPRklf-vt4s-K7JaR9VL-JVKYgA'; // ← ID Sheet của bạn
 
-// Các tab CMS được phép đọc/ghi/backup
+// Các tab CMS được phép đọc/ghi/backup qua ?sheet=... (public, không xác thực)
+// ⚠️ KHÔNG BAO GIỜ thêm 'Users' vào đây — tab Users chứa password hash,
+// chỉ được truy cập qua các action adminXxx có kiểm tra secret riêng bên dưới.
 const CMS_SHEETS = ['Nganh', 'CaseStudies'];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Users — quản lý tài khoản (admin/content/member/vip/partner) + đăng nhập
+// ─────────────────────────────────────────────────────────────────────────────
+const USERS_SHEET = 'Users';
+const USER_HEADERS = ['id', 'username', 'passwordHash', 'passwordSalt', 'name', 'email', 'phone', 'role', 'package', 'status', 'sessionToken', 'sessionExpires', 'createdAt', 'updatedAt'];
+const SECRET_FIELDS = ['passwordHash', 'passwordSalt', 'sessionToken'];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // doGet — xử lý 3 loại request: CMS read / backup / booking form
@@ -30,6 +45,19 @@ function doGet(e) {
   // ── 1. Backup: ?action=backup ──────────────────────────────────────────────
   if (p.action === 'backup') {
     return json(runBackup(ss));
+  }
+
+  // ── 1b. Auth (public): đăng nhập / kiểm tra phiên / đăng xuất ──────────────
+  if (p.action === 'login') return json(handleLogin(ss, p.username, p.password));
+  if (p.action === 'verifySession') return json(handleVerifySession(ss, p.token));
+  if (p.action === 'logout') return json(handleLogout(ss, p.token));
+
+  // ── 1c. Admin Users (cần secret): chỉ đọc danh sách qua GET ────────────────
+  if (p.action === 'adminListUsers') {
+    if (!checkAdminSecret(p)) return json({ error: 'unauthorized' });
+    const sheet = getUsersSheet(ss);
+    const rows = sheet ? readUsersRows(sheet).map(stripSecrets) : [];
+    return json({ status: 'ok', users: rows });
   }
 
   // ── 2. CMS read: ?sheet=Nganh hoặc ?sheet=CaseStudies ─────────────────────
@@ -79,6 +107,16 @@ function doGet(e) {
 function doPost(e) {
   try {
     const p = JSON.parse(e.postData.contents);
+
+    // ── Admin Users (cần secret): tạo/sửa/xóa user ───────────────────────────
+    if (p.action === 'adminSaveUser') {
+      if (!checkAdminSecret(p)) return json({ error: 'unauthorized' });
+      return json(handleSaveUser(SpreadsheetApp.openById(SHEET_ID), p.user));
+    }
+    if (p.action === 'adminDeleteUser') {
+      if (!checkAdminSecret(p)) return json({ error: 'unauthorized' });
+      return json(handleDeleteUser(SpreadsheetApp.openById(SHEET_ID), p.id));
+    }
 
     if (CMS_SHEETS.indexOf(p.sheet) === -1) {
       return json({ error: 'Sheet not allowed: ' + p.sheet });
@@ -216,6 +254,165 @@ function createSheetWithHeaders(ss, name, headers) {
   sheet.setFrozenRows(1);
 
   Logger.log('✓ Tạo tab "' + name + '" với ' + headers.length + ' cột.');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// setupUsersSheet — CHẠY TAY 1 LẦN: tạo tab Users với đầy đủ headers
+// ─────────────────────────────────────────────────────────────────────────────
+function setupUsersSheet() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  createSheetWithHeaders(ss, USERS_SHEET, USER_HEADERS);
+  Logger.log('✓ Đã tạo xong tab Users. Nhớ set ADMIN_SECRET trong Project Settings → Script Properties.');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Users — hàm trợ giúp
+// ─────────────────────────────────────────────────────────────────────────────
+function hashPassword(password, salt) {
+  const raw = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, password + ':' + salt);
+  return Utilities.base64Encode(raw);
+}
+function makeSalt() {
+  return Utilities.base64Encode(Utilities.getUuid() + Utilities.getUuid());
+}
+function makeToken() {
+  return Utilities.base64EncodeWebSafe(Utilities.getUuid() + Utilities.getUuid() + Utilities.getUuid());
+}
+function stripSecrets(userObj) {
+  const out = Object.assign({}, userObj);
+  SECRET_FIELDS.forEach(function (f) { delete out[f]; });
+  return out;
+}
+function getUsersSheet(ss) {
+  return ss.getSheetByName(USERS_SHEET);
+}
+function readUsersRows(sheet) {
+  const rows = sheet.getDataRange().getValues();
+  if (rows.length < 2) return [];
+  const headers = rows[0];
+  return rows.slice(1)
+    .filter(function (r) { return r[0] !== '' && r[0] !== null; })
+    .map(function (r, idx) {
+      const obj = { _row: idx + 2 };
+      headers.forEach(function (h, i) { if (h) obj[h] = r[i]; });
+      return obj;
+    });
+}
+function checkAdminSecret(p) {
+  const expected = PropertiesService.getScriptProperties().getProperty('ADMIN_SECRET');
+  return !!(expected && p.secret && p.secret === expected);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Users — đăng nhập / phiên đăng nhập / đăng xuất (public)
+// ─────────────────────────────────────────────────────────────────────────────
+function handleLogin(ss, username, password) {
+  if (!username || !password) return { error: 'Thieu username hoac mat khau' };
+  const sheet = getUsersSheet(ss);
+  if (!sheet) return { error: 'Chua khoi tao Users sheet' };
+  const rows = readUsersRows(sheet);
+  const user = rows.find(function (u) { return String(u.username).toLowerCase() === String(username).toLowerCase(); });
+  if (!user) return { error: 'Sai tai khoan hoac mat khau' };
+  if (user.status !== 'active') return { error: 'Tai khoan da bi khoa' };
+  const hash = hashPassword(password, user.passwordSalt);
+  if (hash !== user.passwordHash) return { error: 'Sai tai khoan hoac mat khau' };
+
+  const token = makeToken();
+  const expires = new Date(Date.now() + 7 * 24 * 3600 * 1000); // phiên 7 ngày
+  sheet.getRange(user._row, USER_HEADERS.indexOf('sessionToken') + 1).setValue(token);
+  sheet.getRange(user._row, USER_HEADERS.indexOf('sessionExpires') + 1).setValue(expires.toISOString());
+
+  return {
+    status: 'ok',
+    token: token,
+    user: { id: user.id, name: user.name, role: user.role, package: user.package, email: user.email }
+  };
+}
+
+function handleVerifySession(ss, token) {
+  if (!token) return { valid: false };
+  const sheet = getUsersSheet(ss);
+  if (!sheet) return { valid: false };
+  const rows = readUsersRows(sheet);
+  const user = rows.find(function (u) { return u.sessionToken && u.sessionToken === token; });
+  if (!user) return { valid: false };
+  if (user.status !== 'active') return { valid: false };
+  if (!user.sessionExpires || new Date(user.sessionExpires) < new Date()) return { valid: false };
+  return { valid: true, user: { id: user.id, name: user.name, role: user.role, package: user.package, email: user.email } };
+}
+
+function handleLogout(ss, token) {
+  if (!token) return { status: 'ok' };
+  const sheet = getUsersSheet(ss);
+  if (!sheet) return { status: 'ok' };
+  const rows = readUsersRows(sheet);
+  const user = rows.find(function (u) { return u.sessionToken === token; });
+  if (user) {
+    sheet.getRange(user._row, USER_HEADERS.indexOf('sessionToken') + 1).setValue('');
+    sheet.getRange(user._row, USER_HEADERS.indexOf('sessionExpires') + 1).setValue('');
+  }
+  return { status: 'ok' };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Users — CRUD (cần Admin Secret)
+// ─────────────────────────────────────────────────────────────────────────────
+function handleSaveUser(ss, u) {
+  if (!u || !u.username || !u.name || !u.role) return { error: 'Thieu username/name/role' };
+  const sheet = getUsersSheet(ss);
+  if (!sheet) return { error: 'Chua khoi tao Users sheet' };
+  const rows = readUsersRows(sheet);
+  const now = new Date().toISOString();
+
+  if (u.id) {
+    // UPDATE
+    const existing = rows.find(function (r) { return r.id === u.id; });
+    if (!existing) return { error: 'Khong tim thay user id=' + u.id };
+    const dupe = rows.find(function (r) { return r.id !== u.id && String(r.username).toLowerCase() === String(u.username).toLowerCase(); });
+    if (dupe) return { error: 'Username da ton tai' };
+
+    const set = function (col, val) { sheet.getRange(existing._row, USER_HEADERS.indexOf(col) + 1).setValue(val); };
+    set('username', u.username);
+    set('name', u.name);
+    set('email', u.email || '');
+    set('phone', u.phone || '');
+    set('role', u.role);
+    set('package', u.package || '');
+    set('status', u.status || 'active');
+    set('updatedAt', now);
+    if (u.password) {
+      const salt = makeSalt();
+      set('passwordSalt', salt);
+      set('passwordHash', hashPassword(u.password, salt));
+    }
+    return { status: 'ok', id: u.id };
+  } else {
+    // CREATE
+    const dupe = rows.find(function (r) { return String(r.username).toLowerCase() === String(u.username).toLowerCase(); });
+    if (dupe) return { error: 'Username da ton tai' };
+    if (!u.password) return { error: 'Thieu mat khau cho user moi' };
+    const id = 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const salt = makeSalt();
+    const values = {
+      id: id, username: u.username, passwordHash: hashPassword(u.password, salt), passwordSalt: salt,
+      name: u.name, email: u.email || '', phone: u.phone || '', role: u.role, package: u.package || '',
+      status: u.status || 'active', sessionToken: '', sessionExpires: '', createdAt: now, updatedAt: now
+    };
+    const row = USER_HEADERS.map(function (h) { return values[h] !== undefined ? values[h] : ''; });
+    sheet.appendRow(row);
+    return { status: 'ok', id: id };
+  }
+}
+
+function handleDeleteUser(ss, id) {
+  if (!id) return { error: 'Thieu id' };
+  const sheet = getUsersSheet(ss);
+  if (!sheet) return { error: 'Chua khoi tao Users sheet' };
+  const rows = readUsersRows(sheet);
+  const existing = rows.find(function (r) { return r.id === id; });
+  if (!existing) return { error: 'Khong tim thay user' };
+  sheet.deleteRow(existing._row);
+  return { status: 'ok' };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

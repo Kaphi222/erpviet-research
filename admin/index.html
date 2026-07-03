@@ -169,6 +169,8 @@ tr:hover td{background:#fafaf8;}
   <div class="sb-item" onclick="showPanel('site')"><span class="icon">⚙️</span>Cấu hình site</div>
   <div class="sb-section">Google Sheets CMS</div>
   <div class="sb-item" onclick="showPanel('sheets')"><span class="icon">📊</span>Sheets CMS</div>
+  <div class="sb-section">Người dùng</div>
+  <div class="sb-item" onclick="showPanel('users')"><span class="icon">👤</span>Quản lý User<span class="badge" id="badge-users">0</span></div>
   <div class="sb-section">Công cụ</div>
   <div class="sb-item" onclick="showPanel('guide')"><span class="icon">📖</span>Hướng dẫn publish</div>
   <div class="sb-item" onclick="showPanel('preview')"><span class="icon">🔗</span>Links trang</div>
@@ -406,6 +408,61 @@ function json(data) {
       </div>
     </div>
 
+    <!-- USERS PANEL -->
+    <div class="panel" id="panel-users">
+      <div class="alert alert-info">👤 Quản lý tài khoản người dùng (admin/content/member/vip/partner) — lưu trong tab <strong>Users</strong> của Google Sheet, tách biệt hoàn toàn khỏi Ngành/CaseStudies, không lộ qua <code>?sheet=Users</code>. Cần nhập <strong>Admin Secret</strong> (cấu hình trong Apps Script → Script Properties) khi thao tác lần đầu.</div>
+
+      <div class="guide-card" style="margin-bottom:20px;border-left:3px solid var(--teal);">
+        <h3 id="uf-title">➕ Tạo user mới</h3>
+        <input type="hidden" id="uf-id">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
+          <div class="field"><label>Tên *</label><input type="text" id="uf-name" placeholder="Nguyễn Văn A"></div>
+          <div class="field"><label>Username *</label><input type="text" id="uf-username" style="font-family:'JetBrains Mono',monospace;" placeholder="nguyenvana"></div>
+          <div class="field"><label>Mật khẩu <span id="uf-pass-req">*</span></label><input type="password" id="uf-password" placeholder="(để trống nếu không đổi)"></div>
+          <div class="field"><label>Email</label><input type="email" id="uf-email" placeholder="a@vidu.com"></div>
+          <div class="field"><label>Số điện thoại</label><input type="text" id="uf-phone" placeholder="09xxxxxxxx"></div>
+          <div class="field"><label>Vai trò *</label>
+            <select id="uf-role">
+              <option value="member">member</option>
+              <option value="vip">vip</option>
+              <option value="partner">partner</option>
+              <option value="content">content</option>
+              <option value="admin">admin</option>
+            </select>
+          </div>
+          <div class="field"><label>Gói</label>
+            <select id="uf-package">
+              <option value="">— Không —</option>
+              <option value="Free">Free</option>
+              <option value="Member">Member</option>
+              <option value="VIP">VIP</option>
+              <option value="Partner">Partner</option>
+            </select>
+          </div>
+          <div class="field"><label>Trạng thái</label>
+            <select id="uf-status">
+              <option value="active">active</option>
+              <option value="disabled">disabled</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" id="uf-btn" onclick="saveUserForm()">➕ Tạo user</button>
+        <button class="btn btn-secondary btn-sm" id="uf-cancel" style="display:none;" onclick="resetUserForm()">Hủy sửa</button>
+        <div id="uf-status-msg" style="margin-top:12px;font-size:12px;font-family:'JetBrains Mono',monospace;"></div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <h2>Danh sách user</h2>
+          <button class="btn btn-secondary btn-sm" onclick="loadUsersPanel()">↺ Tải lại</button>
+        </div>
+        <table>
+          <thead><tr><th>Username</th><th>Tên</th><th>Vai trò</th><th>Gói</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+          <tbody id="users-tbody"><tr><td colspan="6" class="empty"><p>Nhấn "Tải lại" để xem danh sách.</p></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- GUIDE PANEL -->
     <div class="panel" id="panel-guide">
       <div class="alert alert-info">📌 Workflow: Chỉnh sửa trên Admin Panel → Xuất JSON → Commit lên GitHub → GitHub Pages tự cập nhật</div>
@@ -499,6 +556,7 @@ function json(data) {
 </div>
 
 <script src="../assets/js/cms.js"></script>
+<script src="../assets/js/auth.js"></script>
 <script src="admin.js"></script>
 <script>
 // ── Sheets CMS panel functions ────────────────────────────────────────────────
@@ -670,6 +728,111 @@ async function restoreToSheets() {
     status.style.color = 'var(--error)';
     status.textContent = '✗ Lỗi: ' + e.message;
   }
+}
+
+// ── Users panel functions ───────────────────────────────────────────────────
+let _usersCache = [];
+
+function ensureAdminSecret() {
+  let secret = sessionStorage.getItem('erp_admin_secret');
+  if (!secret) {
+    secret = prompt('Nhập Admin Secret (đã cấu hình trong Apps Script → Script Properties):');
+    if (secret) setAdminSecret(secret.trim());
+  }
+  return sessionStorage.getItem('erp_admin_secret') || '';
+}
+
+async function loadUsersPanel() {
+  ensureAdminSecret();
+  const tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = '<tr><td colspan="6">Đang tải...</td></tr>';
+  const result = await adminListUsers();
+  if (result.error) {
+    if (result.error === 'unauthorized') { sessionStorage.removeItem('erp_admin_secret'); alert('Admin Secret sai. Vui lòng thử lại.'); }
+    tbody.innerHTML = `<tr><td colspan="6">Lỗi: ${result.error}</td></tr>`;
+    return;
+  }
+  _usersCache = result.users || [];
+  document.getElementById('badge-users').textContent = _usersCache.length;
+  if (!_usersCache.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><p>Chưa có user.</p></div></td></tr>'; return; }
+  tbody.innerHTML = _usersCache.map(u => `
+    <tr>
+      <td class="td-id">${u.username}</td>
+      <td>${u.name || ''}</td>
+      <td><span class="td-tag">${u.role}</span></td>
+      <td>${u.package || '—'}</td>
+      <td>${u.status === 'active' ? '✓ active' : '⛔ disabled'}</td>
+      <td class="td-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editUserForm('${u.id}')">✏️ Sửa</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteUserRow('${u.id}','${(u.name || u.username).replace(/'/g, "\\'")}')">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+function editUserForm(id) {
+  const u = _usersCache.find(x => x.id === id);
+  if (!u) return;
+  document.getElementById('uf-title').textContent = '✏️ Sửa user: ' + u.username;
+  document.getElementById('uf-id').value = u.id;
+  document.getElementById('uf-name').value = u.name || '';
+  document.getElementById('uf-username').value = u.username || '';
+  document.getElementById('uf-password').value = '';
+  document.getElementById('uf-pass-req').textContent = '(để trống nếu không đổi)';
+  document.getElementById('uf-email').value = u.email || '';
+  document.getElementById('uf-phone').value = u.phone || '';
+  document.getElementById('uf-role').value = u.role || 'member';
+  document.getElementById('uf-package').value = u.package || '';
+  document.getElementById('uf-status').value = u.status || 'active';
+  document.getElementById('uf-btn').textContent = '💾 Lưu thay đổi';
+  document.getElementById('uf-cancel').style.display = '';
+}
+
+function resetUserForm() {
+  document.getElementById('uf-title').textContent = '➕ Tạo user mới';
+  ['uf-id','uf-name','uf-username','uf-password','uf-email','uf-phone'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('uf-role').value = 'member';
+  document.getElementById('uf-package').value = '';
+  document.getElementById('uf-status').value = 'active';
+  document.getElementById('uf-pass-req').textContent = '*';
+  document.getElementById('uf-btn').textContent = '➕ Tạo user';
+  document.getElementById('uf-cancel').style.display = 'none';
+}
+
+async function saveUserForm() {
+  ensureAdminSecret();
+  const status = document.getElementById('uf-status-msg');
+  const id = document.getElementById('uf-id').value.trim();
+  const user = {
+    id: id || undefined,
+    name: document.getElementById('uf-name').value.trim(),
+    username: document.getElementById('uf-username').value.trim().toLowerCase(),
+    password: document.getElementById('uf-password').value,
+    email: document.getElementById('uf-email').value.trim(),
+    phone: document.getElementById('uf-phone').value.trim(),
+    role: document.getElementById('uf-role').value,
+    package: document.getElementById('uf-package').value,
+    status: document.getElementById('uf-status').value,
+  };
+  if (!user.name || !user.username || (!id && !user.password)) {
+    status.style.color = 'var(--error)'; status.textContent = '✗ Cần điền Tên, Username, và Mật khẩu (khi tạo mới).'; return;
+  }
+  status.style.color = 'var(--steel)'; status.textContent = 'Đang lưu...';
+  const result = await adminSaveUser(user);
+  if (result.error) {
+    if (result.error === 'unauthorized') sessionStorage.removeItem('erp_admin_secret');
+    status.style.color = 'var(--error)'; status.textContent = '✗ ' + result.error; return;
+  }
+  status.style.color = 'var(--success)'; status.textContent = '✓ Đã lưu.';
+  resetUserForm();
+  loadUsersPanel();
+}
+
+async function deleteUserRow(id, label) {
+  if (!confirm(`Xóa user "${label}"?`)) return;
+  ensureAdminSecret();
+  const result = await adminDeleteUser(id);
+  if (result.error) { alert('Lỗi: ' + result.error); return; }
+  loadUsersPanel();
 }
 </script>
 </body>

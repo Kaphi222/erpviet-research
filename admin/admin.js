@@ -9,6 +9,7 @@ const PANEL_TITLES = {
   cases: 'Quản lý Case Studies',
   site: 'Cấu hình Site',
   sheets: 'Google Sheets CMS',
+  users: 'Quản lý User',
   guide: 'Hướng dẫn Publish',
   preview: 'Links trang'
 };
@@ -129,6 +130,7 @@ function showPanel(name) {
   if (panel) panel.classList.add('active');
   event.currentTarget.classList.add('active');
   document.getElementById('panelTitle').textContent = PANEL_TITLES[name] || name;
+  if (name === 'users' && typeof loadUsersPanel === 'function') loadUsersPanel();
 }
 
 // --- INDUSTRY MODAL ---
