@@ -116,6 +116,50 @@ tr:hover td{background:#fafaf8;}
 </head>
 <body>
 
+<!-- LOGIN GATE: mật khẩu = ngày hiện tại ddmmyy (vd 030726) -->
+<div id="login-gate" style="position:fixed;inset:0;z-index:9999;background:var(--ink);display:flex;align-items:center;justify-content:center;">
+  <div style="background:var(--white);padding:36px 32px;width:100%;max-width:360px;border-radius:2px;">
+    <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px;">ERP<span style="color:var(--teal);">Việt</span>Research</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#888;letter-spacing:.05em;margin-bottom:22px;">ADMIN — YÊU CẦU MẬT KHẨU</div>
+    <div class="field" style="margin-bottom:14px;">
+      <label>Mật khẩu</label>
+      <input type="password" id="gate-pass" placeholder="••••••" autocomplete="off"
+             style="font-family:'JetBrains Mono',monospace;letter-spacing:.2em;"
+             onkeydown="if(event.key==='Enter')checkGate()">
+    </div>
+    <button class="btn btn-primary" style="width:100%;" onclick="checkGate()">Đăng nhập →</button>
+    <div id="gate-err" style="margin-top:12px;font-size:12px;color:var(--error);display:none;">✗ Mật khẩu không đúng.</div>
+  </div>
+</div>
+<script>
+(function () {
+  // Mật khẩu = ngày hiện tại dạng ddmmyy (theo giờ máy người dùng)
+  function todayPass() {
+    const d = new Date();
+    return String(d.getDate()).padStart(2, '0')
+         + String(d.getMonth() + 1).padStart(2, '0')
+         + String(d.getFullYear()).slice(-2);
+  }
+  // Đã đăng nhập trong phiên này (đúng ngày hôm nay) thì không hỏi lại
+  if (sessionStorage.getItem('admin_gate') === todayPass()) {
+    document.getElementById('login-gate').style.display = 'none';
+  } else {
+    setTimeout(function () { document.getElementById('gate-pass').focus(); }, 50);
+  }
+  window.checkGate = function () {
+    const input = document.getElementById('gate-pass');
+    if (input.value.trim() === todayPass()) {
+      sessionStorage.setItem('admin_gate', todayPass());
+      document.getElementById('login-gate').style.display = 'none';
+    } else {
+      document.getElementById('gate-err').style.display = 'block';
+      input.value = '';
+      input.focus();
+    }
+  };
+})();
+</script>
+
 <!-- SIDEBAR -->
 <nav class="sidebar">
   <div class="sb-logo">ERP<span>Việt</span>Research <small>Admin Panel v1.0</small></div>
