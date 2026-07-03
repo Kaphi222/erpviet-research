@@ -54,7 +54,33 @@
    * @param {string} sheetName  e.g. 'Nganh' | 'CaseStudies'
    * @returns {Promise<Array>}
    */
-  window.fetchCMS = async function fetchCMS(sheetName) {
+  // Cache 5 phút trong localStorage — lượt xem sau hiện tức thì,
+  // nội dung mới từ Sheet trễ tối đa 5 phút.
+  const CACHE_TTL = 5 * 60 * 1000;
+
+  function readCache(sheetName) {
+    try {
+      const raw = localStorage.getItem('cms_' + sheetName);
+      if (!raw) return null;
+      return JSON.parse(raw); // { t: timestamp, data: [...] }
+    } catch (_) { return null; }
+  }
+
+  function writeCache(sheetName, data) {
+    try {
+      localStorage.setItem('cms_' + sheetName, JSON.stringify({ t: Date.now(), data }));
+    } catch (_) { /* localStorage đầy/bị chặn — bỏ qua */ }
+  }
+
+  window.fetchCMS = async function fetchCMS(sheetName, opts) {
+    const fresh = (opts && opts.fresh) || /[?&]nocache/.test(location.search);
+
+    // 0. Cache còn hạn → dùng ngay, không gọi mạng
+    const cached = readCache(sheetName);
+    if (!fresh && cached && Date.now() - cached.t < CACHE_TTL) {
+      return cached.data;
+    }
+
     // 1. Try Google Sheets API
     if (CMS_SCRIPT_URL) {
       try {
@@ -63,15 +89,20 @@
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
-            return data.map(normalizeRow);
+            const rows = data.map(normalizeRow);
+            writeCache(sheetName, rows);
+            return rows;
           }
         }
       } catch (_) {
-        // fall through to local fallback
+        // fall through
       }
     }
 
-    // 2. Local JSON fallback
+    // 2. Sheet lỗi nhưng có cache cũ (dù hết hạn) → vẫn tốt hơn fallback tĩnh
+    if (cached) return cached.data;
+
+    // 3. Local JSON fallback
     const localPath = FALLBACKS[sheetName];
     if (!localPath) return [];
     try {

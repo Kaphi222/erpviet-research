@@ -437,7 +437,7 @@ async function loadFromSheets(sheetName) {
   status.textContent = 'Đang tải...';
   preview.textContent = 'Đang tải dữ liệu...';
   try {
-    const data = await fetchCMS(sheetName);
+    const data = await fetchCMS(sheetName, { fresh: true });
     _sheetsData = data;
     _sheetsSheet = sheetName;
     status.textContent = `✓ Đã tải ${data.length} hàng từ tab "${sheetName}"`;
@@ -472,7 +472,7 @@ async function exportFromSheets(sheetName, filename) {
   const status = document.getElementById('sheets-status');
   status.textContent = `Đang tải ${sheetName}...`;
   try {
-    const data = await fetchCMS(sheetName);
+    const data = await fetchCMS(sheetName, { fresh: true });
     exportJSON(data, filename);
     status.textContent = `✓ Đã export ${data.length} hàng → ${filename}`;
   } catch (e) {
